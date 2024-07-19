@@ -52,7 +52,7 @@ class Game():
                 'opponentHero': self.opponentHero.info()}
 
     def levelUp(self):
-        self.hero.base_health += 3
+        self.hero.base_health += 1
         self.hero.attack += 1
         self.hero.defense += 1
         self.hero.health = self.hero.base_health
