@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    background-image: url('/static/imgs/bg.webp');
+    color: blanchedalmond;
+    text-shadow: 2px 2px black;
+
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+}
+
+.hand {
+    display: flex;
+    width: 70px;
+    align-items: center;
+    align-items: center;
+}
+
+.card {
+    border: 1px solid #000;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.arena {
+    display: flex;
+
+}
+
+#log {
+    max-height: 300px;
+    width: 60%;
+    overflow-y: scroll;
+}
+
+.hero {
+    width: 250px;
+    height: 250px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: bisque;
+    background-color: #00000000;
+    margin: 20px;
+    padding: 5px;
+    text-shadow: 2px 2px black;
+}
