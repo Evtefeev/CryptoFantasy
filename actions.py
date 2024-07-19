@@ -15,23 +15,30 @@ class Game():
         self.opponentHero = RandomCharacterGenerator.generate_random_character()
 
     def attack(self, attacker: Character, defender: Character) -> float:
-        if attacker.health <= 0:
+        if attacker.health <= 0 or defender.health <= 0:
             return 0
         damage = round(attacker.attack/defender.defense -
                        random.uniform(-self.RANDOM_DAMAGE, self.RANDOM_DAMAGE), 2)
+        if isinstance(attacker, defender.counter_class):
+            damage *= 2
         defender.health -= damage
         return damage
 
-    def attackOpponent(self) -> tuple[float, str]:
+    def attackOpponent(self) -> tuple[float, str, str]:
+        if self.hero.health <= 0:
+            return (0, "You Died!", "died")
         damage = self.attack(self.hero, self.opponentHero)
         message = ""
+        state = "attacked"
         if self.opponentHero.health < 0:
             self.hero.score += 1
+            self.levelUp()
             message = f"Opponent {self.opponentHero.name} killed!\n"
             self.opponentHero = RandomCharacterGenerator.generate_random_character()
             message += f"New Opponent is {self.opponentHero.name}!"
+            state = "killed"
 
-        return (damage, message)
+        return (damage, message, state)
 
     def attackHero(self) -> tuple[float, str]:
         damage = self.attack(self.opponentHero, self.hero)
@@ -43,3 +50,9 @@ class Game():
     def getState(self):
         return {'hero': self.hero.info(),
                 'opponentHero': self.opponentHero.info()}
+
+    def levelUp(self):
+        self.hero.base_health += 3
+        self.hero.attack += 1
+        self.hero.defense += 1
+        self.hero.health = self.hero.base_health

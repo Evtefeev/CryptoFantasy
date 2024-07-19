@@ -3,7 +3,9 @@ body {
     background-image: url('/static/imgs/bg.webp');
     color: blanchedalmond;
     text-shadow: 2px 2px black;
-
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
 }
 
 .game-container {
@@ -29,6 +31,7 @@ body {
 
 .arena {
     display: flex;
+    z-index: 1;
 
 }
 
@@ -49,4 +52,41 @@ body {
     margin: 20px;
     padding: 5px;
     text-shadow: 2px 2px black;
+
+}
+
+#opponent-hero {
+    cursor: pointer;
+}
+
+.fight {
+    background-image: url('/static/imgs/logo.png');
+    width: 50px;
+    height: 50px;
+    padding: 15px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: rgb(255, 255, 255);
+    font-size: large;
+    z-index: 3;
+    text-transform: uppercase;
+    cursor: pointer;
+
+}
+
+.fog {
+    background-color: rgba(72, 255, 0, 0.226);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* background-color: rgba(128, 128, 128, 0.5); Серый прозрачный цвет */
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
 }

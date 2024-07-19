@@ -16,10 +16,10 @@ socket.on('gameState', (state) => {
     document.getElementById('opponent-hero-attack').innerText = `Атака: ${state.opponentHero.attack}`
     document.getElementById('opponent-hero-defense').innerText = `Броня: ${state.opponentHero.defense}`
     if (state.hero.health <= 0) {
-        document.getElementById("attack").disabled = true;
+
         document.getElementById("arena").style.backgroundColor = "gray";
     } else {
-        document.getElementById("attack").disabled = false;
+
         document.getElementById("arena").style.backgroundColor = "";
     }
 
@@ -29,6 +29,9 @@ socket.on('gameState', (state) => {
 socket.on('heroAttackDamage', (damage, message) => {
     log += 'Атакуем противника -' + damage + 'XP\n'
     log += message ? message + '\n\n' : ''
+    if (message.includes("killed")) {
+        fight(false);
+    }
     document.getElementById('log').innerText = log + "\n\n\n\n"
 })
 
@@ -44,13 +47,24 @@ const playCard = (card = 'none') => {
     updateScroll();
 }
 
+const fight = (start = true) => {
+    if (start) {
+        document.getElementById('fog').style.display = "none"
+
+    } else {
+        document.getElementById('fog').style.display = "flex"
+
+    }
+}
+
+document.getElementById('fight').onclick = fight;
 
 const respawnPlayer = () => {
     socket.emit('respawn')
     console.log('resapwn')
 }
 
-const hand = document.getElementById('hand').getElementsByTagName('button')[0]
+const hand = document.getElementById('opponent-hero')
 hand.onclick = playCard
 
 

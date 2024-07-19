@@ -5,6 +5,7 @@ class Character:
     def __init__(self, name: str, health: int, attack: int, defense: int, counter_class):
         self.name = name
         self.health = health
+        self.base_health = health
         self.attack = attack
         self.defense = defense
         self.counter_class = counter_class
