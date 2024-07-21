@@ -3,20 +3,21 @@
   <head>
     <title>Легенды Вечности</title>
     <link rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
-    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+
   </head>
   <body>
     <div class="game-container">
       <h1>Легенды Вечности</h1>
       <div class="fog" id="fog">
-
         <div class="fight" id="fight">Fight!</div>
-        <br>
-        <br>
-        <div><p>Press Fight to start</p></div>
-
+        <br />
+        <br />
+        <div>
+          <p>Press Fight to start</p>
+        </div>
       </div>
       <div class="arena" id="arena">
         <div>
@@ -30,8 +31,7 @@
           </div>
         </div>
 
-        <div class="hand" id="hand">
-        </div>
+        <div class="hand" id="hand"></div>
         <div>
           <h2 id="opponent-hero-name">Вражеский герой:</h2>
           <div class="hero" id="opponent-hero">
