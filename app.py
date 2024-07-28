@@ -4,6 +4,7 @@ from flask import Flask, render_template, request
 from flask_socketio import SocketIO, emit
 from charcters import RandomCharacterGenerator
 import actions
+from strategy import Strategy
 
 app = Flask(__name__)
 socketio = SocketIO(app)
@@ -18,6 +19,23 @@ def get_session_info():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+
+@app.route('/clicker')
+def clicker():
+    return render_template('clicker.html')
+
+
+@app.route('/strategy')
+def strategy():
+    return render_template('strategy.html', card_ids=range(Strategy.CARDS_NUMBER))
+
+
+@app.route('/strategy_api', methods=['POST'])
+def strategy_api():
+    if request.form.get('action') == 'my_cards':
+        return Strategy.generateCards()
+    return "invalid action"
 
 
 @socketio.on('connect')

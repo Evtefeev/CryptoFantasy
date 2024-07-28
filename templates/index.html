@@ -6,45 +6,18 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
     <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
     <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-
   </head>
   <body>
     <div class="game-container">
       <h1>Легенды Вечности</h1>
-      <div class="fog" id="fog">
-        <div class="fight" id="fight">Fight!</div>
-        <br />
-        <br />
-        <div>
-          <p>Press Fight to start</p>
+      {% block body %}
+        <div class="game_link">
+          <a href="/clicker">Clicker</a>
         </div>
-      </div>
-      <div class="arena" id="arena">
-        <div>
-          <h2 id="hero-name">Ваш герой:</h2>
-          <div class="hero" id="hero">
-            <p id="hero-health">Здоровье:</p>
-            <p id="hero-attack">Атака:</p>
-            <p id="hero-defense">Броня:</p>
-            <p id="hero-score">Опыт:</p>
-            <button id="respawn">Respawn</button>
-          </div>
+        <div class="game_link">
+          <a href="/strategy">Strategy</a>
         </div>
-
-        <div class="hand" id="hand"></div>
-        <div>
-          <h2 id="opponent-hero-name">Вражеский герой:</h2>
-          <div class="hero" id="opponent-hero">
-            <p id="opponent-hero-health">Здоровье:</p>
-            <p id="opponent-hero-attack">Атака:</p>
-            <p id="opponent-hero-defense">Броня:</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="log"></div>
+      {% endblock %}
     </div>
-
-    <script src="{{ url_for('static', filename='game.js') }}"></script>
   </body>
 </html>

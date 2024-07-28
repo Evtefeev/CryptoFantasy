@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+
+{% block body %}
+  
+    <div class="fog" id="fog">
+      <div class="fight" id="fight">Fight!</div>
+      <br />
+      <br />
+      <div>
+        <p>Press Fight to start</p>
+      </div>
+    </div>
+    <div class="arena" id="arena">
+      <div>
+        <h2 id="hero-name">Ваш герой:</h2>
+        <div class="hero" id="hero">
+          <p id="hero-health">Здоровье:</p>
+          <p id="hero-attack">Атака:</p>
+          <p id="hero-defense">Броня:</p>
+          <p id="hero-score">Опыт:</p>
+          <button id="respawn">Respawn</button>
+        </div>
+      </div>
+
+      <div class="hand" id="hand"></div>
+      <div>
+        <h2 id="opponent-hero-name">Вражеский герой:</h2>
+        <div class="hero" id="opponent-hero">
+          <p id="opponent-hero-health">Здоровье:</p>
+          <p id="opponent-hero-attack">Атака:</p>
+          <p id="opponent-hero-defense">Броня:</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="log"></div>
+
+
+  <script src="{{ url_for('static', filename='game.js') }}"></script>
+{% endblock %}
