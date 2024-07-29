@@ -9,6 +9,7 @@ class Game():
     def __init__(self) -> None:
         self.hero = RandomCharacterGenerator.generate_random_character()
         self.opponentHero = RandomCharacterGenerator.generate_random_character()
+        self.damage_factor = 1
 
     def respawn(self):
         self.hero = RandomCharacterGenerator.generate_random_character()
@@ -21,6 +22,7 @@ class Game():
                        random.uniform(-self.RANDOM_DAMAGE, self.RANDOM_DAMAGE), 2)
         if isinstance(attacker, defender.counter_class):
             damage *= 2
+        damage *= self.damage_factor
         defender.health -= damage
         return damage
 
@@ -56,3 +58,7 @@ class Game():
         self.hero.attack += 1
         self.hero.defense += 1
         self.hero.health = self.hero.base_health
+
+
+class StrategyGame(Game):
+    pass

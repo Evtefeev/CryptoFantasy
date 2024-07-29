@@ -1,0 +1,82 @@
+.arena {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.player_cards {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hand {
+    height: 70px;
+    margin-left: 50%;
+    margin-right: 50%;
+}
+
+#health-bar-container {
+    width: 100%;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 20px;
+    margin-top: 5px;
+}
+
+#health-bar {
+    width: 100%;
+    height: 100%;
+    background-color: #660d0d;
+    transition: width 0.3s;
+    margin-bottom: 0;
+}
+
+
+.gray-foreground {
+    color: gray;
+    opacity: 0.4;
+    cursor: none;
+
+}
+
+.gray-foreground * {
+    color: gray !important;
+}
+
+.card {
+    background-color: #4caf4f9f;
+}
+
+.hero {
+    padding-top: 0px;
+}
+
+#hero-health {
+    margin-top: 0px;
+}
+
+#hero-name {
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+
+.card{
+    max-width: 150px;
+    max-height: fit-content;
+    margin: 5px;
+    padding: 0px;
+}
+.card .hero{
+    width: 150px;
+    height: 150px;
+    margin: 0px;
+    padding: 0px;
+}
+.card p{
+    padding-left: 5px;
+    padding-top: 2px;
+}

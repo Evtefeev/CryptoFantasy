@@ -97,19 +97,3 @@ body {
     font-size: 27px;
 }
 
-.card{
-    max-width: 170px;
-    max-height: fit-content;
-    margin: 5px;
-    padding: 0px;
-}
-.card .hero{
-    width: 150px;
-    height: 150px;
-    margin: 0px;
-    padding: 0px;
-}
-.card p{
-    padding-left: 5px;
-    padding-top: 2px;
-}

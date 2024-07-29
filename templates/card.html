@@ -1,6 +1,9 @@
 {% block body %}
-  <div class="card" id="card_{{card_id}}">
+  <div class="card user_card" id="card_{{ card_id }}">
     <h2 id="hero-name">Ваш герой:</h2>
+    <div id="health-bar-container">
+      <div id="health-bar"></div>
+    </div>
     <div class="hero" id="hero">
       <p id="hero-health">Здоровье:</p>
       <p id="hero-attack">Атака:</p>

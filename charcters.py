@@ -11,6 +11,8 @@ class Character:
         self.counter_class = counter_class
         self.image = name.replace(" ", "_")+".png"
         self.score = 0
+        self.card_number = 0
+        self.card_id = id(self)
 
     def __repr__(self):
         return f"{self.name} (Health: {self.health}, Attack: {self.attack}, Defense: {self.defense})"
@@ -23,11 +25,17 @@ class Character:
         return {
             'name': self.name,
             'health': round(self.health, 2),
+            'base_health': round(self.base_health, 2),
             'attack': self.attack,
             'defense': self.defense,
             'score': self.score,
-            'image': self.image
+            'image': self.image,
+            'card_number': self.card_number,
+            'card_id': self.card_id
         }
+    
+    def set_card_number(self, n):
+        self.card_number = n
 
 
 class Human(Character):
