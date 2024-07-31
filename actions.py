@@ -5,6 +5,7 @@ from charcters import Character, RandomCharacterGenerator
 class Game():
 
     RANDOM_DAMAGE = 0.5
+    ENERGY_DECREASE_FACTOR = 20
 
     def __init__(self) -> None:
         self.hero = RandomCharacterGenerator.generate_random_character()
@@ -22,8 +23,9 @@ class Game():
                        random.uniform(-self.RANDOM_DAMAGE, self.RANDOM_DAMAGE), 2)
         if isinstance(attacker, defender.counter_class):
             damage *= 2
-        damage *= self.damage_factor
+        damage *= self.damage_factor * attacker.energy
         defender.health -= damage
+        attacker.energy /= Game.ENERGY_DECREASE_FACTOR
         return damage
 
     def attackOpponent(self) -> tuple[float, str, str]:

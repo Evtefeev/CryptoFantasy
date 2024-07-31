@@ -17,7 +17,7 @@
     margin-right: 50%;
 }
 
-#health-bar-container {
+.bar-container {
     width: 100%;
     background-color: #ddd;
     border-radius: 5px;
@@ -27,11 +27,22 @@
 }
 
 #health-bar {
+    background-color: #660d0d;
+}
+
+#hero-energy-bar {
+    background-color: #4a0d66;
+}
+
+.bar {
     width: 100%;
     height: 100%;
-    background-color: #660d0d;
     transition: width 0.3s;
     margin-bottom: 0;
+}
+
+.bar p {
+    margin: 0px;
 }
 
 
@@ -64,19 +75,35 @@
 }
 
 
-.card{
+.card {
     max-width: 150px;
     max-height: fit-content;
     margin: 5px;
     padding: 0px;
 }
-.card .hero{
+
+.card .hero {
     width: 150px;
     height: 150px;
     margin: 0px;
     padding: 0px;
 }
-.card p{
+
+.card p {
     padding-left: 5px;
     padding-top: 2px;
+}
+
+.hero p {
+    margin: 4px;
+}
+
+
+
+
+#hero-health,
+#hero-energy {
+    position: fixed;
+    margin: 0px;
+    padding: 0px;
 }

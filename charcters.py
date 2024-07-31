@@ -13,6 +13,7 @@ class Character:
         self.score = 0
         self.card_number = 0
         self.card_id = id(self)
+        self.energy = 1
 
     def __repr__(self):
         return f"{self.name} (Health: {self.health}, Attack: {self.attack}, Defense: {self.defense})"
@@ -31,9 +32,10 @@ class Character:
             'score': self.score,
             'image': self.image,
             'card_number': self.card_number,
-            'card_id': self.card_id
+            'card_id': self.card_id,
+            'energy': round(self.energy, 2)
         }
-    
+
     def set_card_number(self, n):
         self.card_number = n
 

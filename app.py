@@ -81,18 +81,22 @@ def strategy_api():
         before = strategy.getOpponentCardInfo(opponent_card_num)
         strategy.attackOpponent(my_card_num, opponent_card_num)
         after = strategy.getOpponentCardInfo(opponent_card_num)
-        return {'before': before, 'after': after}
+        user = strategy.getUserCardInfo(my_card_num)
+        return {'before': before, 'after': after, 'user': user}
 
 
     if request.form.get('action') == 'wait_for_opponent':
         opponent_card_num = strategy.getRandomActiveOpponentCardNumber()
         if opponent_card_num == None:
-            return {'status': 'vicory'}
+            return {'status': 'Victory!'}
         user_card_num = strategy.getRandomActiveUserCardNumber()
         if user_card_num == None:
-            return {'status': 'lose'}
-        opponent_info = strategy.getOpponentCardInfo(opponent_card_num)
+            return {'status': 'lose!'}
         strategy.attackUser(user_card_num, opponent_card_num)
+        user_card_num = strategy.getRandomActiveUserCardNumber()
+        if user_card_num == None:
+            return {'status': 'lose!'}
+        opponent_info = strategy.getOpponentCardInfo(opponent_card_num)
         user_info = strategy.getUserCardInfo(user_card_num)
         return {'opponent_info': opponent_info, 'user_info': user_info}
 

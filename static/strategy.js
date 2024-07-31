@@ -7,16 +7,25 @@ $.post("strategy_api", { action: "start" }, (result) => {
     let id = 0;
     result.forEach((state) => {
         let card = $('#card_' + id);
-        console.log(state);
-        card.find('#hero-name')[0].innerText = `${state.name}`
-        card.find('#hero')[0].style.backgroundImage = `url('/static/imgs/${state.image}')`
-        card.find('#hero-health')[0].innerText = `Здоровье: ${state.health}`
-        card.find('#hero-attack')[0].innerText = `Атака: ${state.attack}`
-        card.find('#hero-defense')[0].innerText = `Броня: ${state.defense}`
-        card.find('#hero-score')[0].innerText = `Опыт: ${state.score}`
+        fillCard(state, card);
         id++;
     });
 });
+
+
+
+function loadMyCards() {
+    $.post("strategy_api", { action: "my_cards" }, (result) => {
+        console.log(result);
+        let id = 0;
+        result.forEach((state) => {
+            let card = $('#card_' + id);
+            fillCard(state, card);
+            id++;
+        });
+    });
+}
+
 
 function fillOponentCard(card_data) {
     console.log(card_data);
@@ -46,34 +55,42 @@ function fillCard(card_data, card) {
     card.find('#hero-health')[0].innerText = `Здоровье: ${card_data.health}`
     card.find('#hero-attack')[0].innerText = `Атака: ${card_data.attack}`
     card.find('#hero-defense')[0].innerText = `Броня: ${card_data.defense}`
-    card.find('#hero-score')[0].innerText = `Опыт: ${card_data.score}`
+    if (card.find('#hero-energy').length > 0)
+        card.find('#hero-energy')[0].innerText = `Энегия: ${card_data.energy}`
     const healthBar = card.find('#health-bar')[0];
-
-    // Calculate the width of the health bar as a percentage
-    let healthPercentage = (card_data.health / card_data.base_health) * 100;
-
-
 
     if (card_data.health <= 0) {
         card[0].classList.add('gray-foreground');
         healthPercentage = 0;
     }
-    // Update the health bar width and the displayed health value
-    healthBar.style.width = healthPercentage + '%';
+
+    const heroEnergyBar = card.find('#hero-energy-bar')[0];
+
+    updateHeroBar(healthBar, card_data.health, card_data.base_health);
+    updateHeroBar(heroEnergyBar, card_data.energy, 1);
+
 }
 
+function updateHeroBar(bar, value, max) {
+    let healthPercentage = (value / max) * 100;
+    if (bar)
+        bar.style.width = healthPercentage + '%';
+}
 
 function waitForOpponent() {
     $.post("strategy_api", { action: "wait_for_opponent" }, (result) => {
         console.log(result);
-        if (result.status) {
-            alert(result.status);
-            return;
+        try {
+            let opponent_card = result.opponent_info
+            fillOponentCard(opponent_card)
+            setTimeout(fillUserCard.bind(null, result.user_info), 2000 * time_scale)
+            setTimeout(loadMyCards, 2500 * time_scale)
+        } finally {
+            if (result.status) {
+                alert(result.status);
+                return;
+            }
         }
-        let opponent_card = result.opponent_info
-        fillOponentCard(opponent_card)
-        setTimeout(fillUserCard.bind(null, result.user_info), 2000*time_scale)
-
     });
 }
 
@@ -85,10 +102,10 @@ function attack(my_card, opponent_card) {
     }, (result) => {
         let card_data = result.before
         console.log(result.after);
+        fillUserCard(result.user);
         fillOponentCard(card_data);
-
-        setTimeout(fillOponentCard.bind(null, result.after), 2000*time_scale)
-        setTimeout(waitForOpponent, 5000*time_scale)
+        setTimeout(fillOponentCard.bind(null, result.after), 2000 * time_scale)
+        setTimeout(waitForOpponent, 5000 * time_scale)
 
     });
 }
