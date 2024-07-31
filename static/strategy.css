@@ -9,6 +9,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .hand {
@@ -77,7 +78,7 @@
 
 .card {
     max-width: 150px;
-    max-height: fit-content;
+    height: 260px;
     margin: 5px;
     padding: 0px;
 }
@@ -103,7 +104,7 @@
 
 #hero-health,
 #hero-energy {
-    position: fixed;
+    position: absolute;
     margin: 0px;
     padding: 0px;
 }

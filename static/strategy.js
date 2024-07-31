@@ -85,6 +85,8 @@ function waitForOpponent() {
             fillOponentCard(opponent_card)
             setTimeout(fillUserCard.bind(null, result.user_info), 2000 * time_scale)
             setTimeout(loadMyCards, 2500 * time_scale)
+        } catch {
+
         } finally {
             if (result.status) {
                 alert(result.status);

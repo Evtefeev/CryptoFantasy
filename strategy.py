@@ -5,6 +5,7 @@ from actions import RandomCharacterGenerator, StrategyGame, Game
 class Strategy:
 
     CARDS_NUMBER = 6
+    MIN_ENERGY = 0.05
 
     def __init__(self) -> None:
         self.user_cards = []
@@ -77,6 +78,8 @@ class Strategy:
                 card.energy *= Game.ENERGY_DECREASE_FACTOR/3
             if card.energy > 1:
                 card.energy = 1
+            if card.energy < Strategy.MIN_ENERGY:
+                card.energy = Strategy.MIN_ENERGY
 
     def increaseOpponentEnergy(self):
         for card in self.computer_cards:
@@ -84,6 +87,8 @@ class Strategy:
                 card.energy *= Game.ENERGY_DECREASE_FACTOR/3
             if card.energy > 1:
                 card.energy = 1
+            if card.energy < Strategy.MIN_ENERGY:
+                card.energy = Strategy.MIN_ENERGY
 
     def getReadyComputerCards(self):
         return [card for card in self.computer_cards if card.energy == 1 and card.card_number in self.active_computer_cards]

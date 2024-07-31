@@ -94,10 +94,11 @@ def strategy_api():
             return {'status': 'lose!'}
         strategy.attackUser(user_card_num, opponent_card_num)
         user_card_num = strategy.getRandomActiveUserCardNumber()
-        if user_card_num == None:
-            return {'status': 'lose!'}
-        opponent_info = strategy.getOpponentCardInfo(opponent_card_num)
         user_info = strategy.getUserCardInfo(user_card_num)
+        
+        if user_card_num == None:
+            return {'status': 'lose!', 'user_info': user_info}
+        opponent_info = strategy.getOpponentCardInfo(opponent_card_num)
         return {'opponent_info': opponent_info, 'user_info': user_info}
 
     return "invalid action"
