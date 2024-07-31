@@ -77,14 +77,17 @@
 
 
 .card {
-    max-width: 150px;
-    height: 260px;
+    width: 150px;
+    height: fit-content;
     margin: 5px;
     padding: 0px;
 }
 
+
+
+
 .card .hero {
-    width: 150px;
+    width: 100%;
     height: 150px;
     margin: 0px;
     padding: 0px;
@@ -107,4 +110,21 @@
     position: absolute;
     margin: 0px;
     padding: 0px;
+}
+
+
+@media (max-width: 1250px) {
+    .card {
+        width: 30vw;
+        height: max-content;
+        margin: 5px;
+        margin-top: 15px;
+        font-size: 32px;
+    }
+    .bar-container{
+        height: 35px;
+    }
+    #hero {
+        height: 150px;
+    }
 }
