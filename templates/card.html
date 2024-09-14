@@ -1,21 +1,22 @@
 {% block body %}
   <div class="card user_card" id="card_{{ card_id }}">
-    <h2 id="hero-name">Ваш герой:</h2>
-    <div class="bar-container" id="health-bar-container">
-      <p id="hero-health">Здоровье:</p>
-      <div class="bar" id="health-bar">
-        
+    <div>
+      <h2 id="hero-name">Ваш герой:</h2>
+
+      <div class="props-bar">
+        <p id="hero-attack">🗡️:</p>
+        <p id="hero-defense">🛡️:</p>
       </div>
     </div>
-    <div class="bar-container" id="energy-bar-container">
-      <p id="hero-energy">"Энергия":</p>
-      <div class="bar" id="hero-energy-bar">
-       
+    <div>
+      <div class="bar-container" id="health-bar-container">
+        <p id="hero-health">❤️:</p>
+        <div class="bar" id="health-bar"></div>
       </div>
-    </div>
-    <div class="hero" id="hero">
-      <p id="hero-attack">Атака:</p>
-      <p id="hero-defense">Броня:</p>
+      <div class="bar-container" id="energy-bar-container">
+        <p id="hero-energy">"⚡":</p>
+        <div class="bar" id="hero-energy-bar"></div>
+      </div>
     </div>
   </div>
 {% endblock %}

@@ -60,11 +60,25 @@
 
 .card {
     background-color: #4caf4f9f;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 200px;
+    width: 150px;
+    margin: 5px;
+    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /* Optional: Add padding for better spacing */
 }
 
-.hero {
-    padding-top: 0px;
-}
+
+.bar-container {
+    margin-top: auto; /* Pushes the bars to the bottom */
+  }
+  
 
 #hero-health {
     margin-top: 0px;
@@ -74,17 +88,6 @@
     margin-top: 2px;
     margin-bottom: 2px;
 }
-
-
-.card {
-    width: 150px;
-    height: fit-content;
-    margin: 5px;
-    padding: 0px;
-}
-
-
-
 
 .card .hero {
     width: 100%;
@@ -98,8 +101,12 @@
     padding-top: 2px;
 }
 
-.hero p {
+
+
+.props-bar p {
     margin: 4px;
+    margin-left: 0px;
+    padding-left: 0px;
 }
 
 
@@ -116,15 +123,20 @@
 @media (max-width: 1250px) {
     .card {
         width: 30vw;
-        height: max-content;
+        height: 27vw;
         margin: 5px;
         margin-top: 15px;
         font-size: 32px;
     }
-    .bar-container{
+
+    .bar-container {
         height: 35px;
     }
-    #hero {
-        height: 150px;
-    }
+
+
+}
+
+.props-bar {
+    display: flex;
+    justify-content: space-between;
 }

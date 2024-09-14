@@ -1,6 +1,21 @@
 let time_scale = 0.5
 
 
+// let hero_text = "Ваш герой:"
+// let health_text = "Здоровье:"
+// let attack_text = "Атака:"
+// let defence_text = "Атака:"
+// let score_text = "Опыт:"
+// let enemi_text="Вражеский герой:"
+
+let hero_text = "Ваш герой:"
+let health_text = "❤️"
+let energy_text = "⚡"
+let attack_text = "🗡️"
+let defence_text = "🛡️"
+let score_text = "Опыт:"
+let enemi_text="Вражеский герой:"
+
 
 $.post("strategy_api", { action: "start" }, (result) => {
     console.log(result);
@@ -51,12 +66,12 @@ function fillUserCard(card_data) {
 function fillCard(card_data, card) {
 
     card.find('#hero-name')[0].innerText = `${card_data.name}`
-    card.find('#hero')[0].style.backgroundImage = `url('/static/imgs/${card_data.image}')`
-    card.find('#hero-health')[0].innerText = `Здоровье: ${card_data.health}`
-    card.find('#hero-attack')[0].innerText = `Атака: ${card_data.attack}`
-    card.find('#hero-defense')[0].innerText = `Броня: ${card_data.defense}`
+    card[0].style.backgroundImage = `url('/static/imgs/${card_data.image}')`
+    card.find('#hero-health')[0].innerText = `${health_text} ${card_data.health}`
+    card.find('#hero-attack')[0].innerText = `${attack_text} ${card_data.attack}`
+    card.find('#hero-defense')[0].innerText = `${defence_text} ${card_data.defense}`
     if (card.find('#hero-energy').length > 0)
-        card.find('#hero-energy')[0].innerText = `Энегия: ${card_data.energy}`
+        card.find('#hero-energy')[0].innerText = `${energy_text} ${card_data.energy}`
     const healthBar = card.find('#health-bar')[0];
 
     if (card_data.health <= 0) {

@@ -1,16 +1,18 @@
 {% block body %}
   <div class="card opponent_card" id="opponent_card_{{ card_id }}">
-    <h2 id="hero-name">???????</h2>
-    <div class="bar-container" id="health-bar-container">
-      <p id="hero-health">Здоровье:</p>
-      <div class="bar" id="health-bar">
-       
+    <div>
+      <h2 id="hero-name">???????</h2>
+      <div class="props-bar">
+        <p id="hero-attack">🗡️ ?</p>
+        <p id="hero-defense">🛡️ ?</p>
       </div>
     </div>
-    <div class="hero" id="hero">
-      <p id="hero-health"></p>
-      <p id="hero-attack">Атака: ?</p>
-      <p id="hero-defense">Броня: ?</p>
+
+    <div>
+      <div class="bar-container" id="health-bar-container">
+        <p id="hero-health">❤️</p>
+        <div class="bar" id="health-bar"></div>
+      </div>
     </div>
   </div>
 {% endblock %}

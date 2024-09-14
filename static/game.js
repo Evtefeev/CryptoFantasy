@@ -2,19 +2,32 @@ const socket = io()
 
 let log = ""
 
+let hero_text = "Ваш герой:"
+let health_text = "Здоровье:"
+let attack_text = "Атака:"
+let defence_text = "Атака:"
+let score_text = "Опыт:"
+let enemi_text="Вражеский герой:"
+
+// let hero_text = "Ваш герой:"
+// let health_text = "❤️"
+// let attack_text = "⚡"
+// let defence_text = "🛡️"
+// let score_text = "Опыт:"
+// let enemi_text="Вражеский герой:"
 
 socket.on('gameState', (state) => {
-    document.getElementById('hero-name').innerText = `Ваш герой: ${state.hero.name}`
+    document.getElementById('hero-name').innerText = `${hero_text} ${state.hero.name}`
     document.getElementById('hero').style.backgroundImage = `url('/static/imgs/${state.hero.image}')`
-    document.getElementById('hero-health').innerText = `Здоровье: ${state.hero.health}`
-    document.getElementById('hero-attack').innerText = `Атака: ${state.hero.attack}`
-    document.getElementById('hero-defense').innerText = `Броня: ${state.hero.defense}`
-    document.getElementById('hero-score').innerText = `Опыт: ${state.hero.score}`
-    document.getElementById('opponent-hero-name').innerText = `Вражеский герой: ${state.opponentHero.name}`
+    document.getElementById('hero-health').innerText = `${health_text} ${state.hero.health}`
+    document.getElementById('hero-attack').innerText = `${attack_text} ${state.hero.attack}`
+    document.getElementById('hero-defense').innerText = `${defence_text} ${state.hero.defense}`
+    document.getElementById('hero-score').innerText = `${score_text} ${state.hero.score}`
+    document.getElementById('opponent-hero-name').innerText = `${enemi_text} ${state.opponentHero.name}`
     document.getElementById('opponent-hero').style.backgroundImage = `url('/static/imgs/${state.opponentHero.image}')`
-    document.getElementById('opponent-hero-health').innerText = `Здоровье: ${state.opponentHero.health}`
-    document.getElementById('opponent-hero-attack').innerText = `Атака: ${state.opponentHero.attack}`
-    document.getElementById('opponent-hero-defense').innerText = `Броня: ${state.opponentHero.defense}`
+    document.getElementById('opponent-hero-health').innerText = `${health_text} ${state.opponentHero.health}`
+    document.getElementById('opponent-hero-attack').innerText = `${attack_text} ${state.opponentHero.attack}`
+    document.getElementById('opponent-hero-defense').innerText = `${defence_text} ${state.opponentHero.defense}`
     if (state.hero.health <= 0) {
 
         document.getElementById("arena").style.backgroundColor = "gray";
