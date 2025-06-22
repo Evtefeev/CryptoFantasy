@@ -14,10 +14,10 @@ let energy_text = "⚡"
 let attack_text = "🗡️"
 let defence_text = "🛡️"
 let score_text = "Опыт:"
-let enemi_text="Вражеский герой:"
+let enemi_text = "Вражеский герой:"
 
 
-$.post("strategy_api", { action: "start" }, (result) => {
+$.post("strategy_api", { action: "start", "game-mode": "bot" }, (result) => {
     console.log(result);
     let id = 0;
     result.forEach((state) => {
