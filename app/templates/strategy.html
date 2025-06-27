@@ -8,13 +8,13 @@
       <br />
       <br />
       <div>
-        <p>Not available yet</p>
+        <p>Press Fight to start</p>
       </div>
     </div>
     <div class="arena" id="arena">
 
 
-      {% comment %} <div class="player_cards"> 
+      <div class="player_cards"> 
         {% for card_id in card_ids %}
         {% include 'opponent_card.html' with context %}
       {% endfor %}
@@ -25,16 +25,16 @@
       {% for card_id in card_ids %}
       {% include 'card.html' with context %}
     {% endfor %}
-  </div> {% endcomment %}
+  </div>
      
-
-      
-
 
     </div>
 
     <div id="log"></div>
 
 
-  {% comment %} <script src="{{ url_for('static', filename='strategy.js') }}"></script> {% endcomment %}
+  <script src="{{ url_for('static', filename='strategy.js') }}"></script>
+    <script>
+    startBot();
+  </script>
 {% endblock %}

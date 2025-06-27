@@ -17,15 +17,19 @@ let score_text = "Опыт:"
 let enemi_text = "Вражеский герой:"
 
 
-$.post("strategy_api", { action: "start", "game-mode": "bot" }, (result) => {
-    console.log(result);
-    let id = 0;
-    result.forEach((state) => {
-        let card = $('#card_' + id);
-        fillCard(state, card);
-        id++;
+
+function startGame(mode) {
+    $.post("strategy_api", { action: "start", "game-mode": mode }, (result) => {
+        console.log(result);
+        let id = 0;
+        result.forEach((state) => {
+            let card = $('#card_' + id);
+            fillCard(state, card);
+            id++;
+        });
     });
-});
+}
+
 
 
 
@@ -92,8 +96,8 @@ function updateHeroBar(bar, value, max) {
         bar.style.width = healthPercentage + '%';
 }
 
-function waitForOpponent() {
-    $.post("strategy_api", { action: "wait_for_opponent" }, (result) => {
+function waitForOpponentTurn() {
+    $.post("strategy_api", { action: "wait_for_opponent_turn" }, (result) => {
         console.log(result);
         try {
             let opponent_card = result.opponent_info
@@ -111,6 +115,27 @@ function waitForOpponent() {
     });
 }
 
+
+function setOpponentStatus(status_text) {
+    $("#player_info").text(status_text);
+
+}
+
+let waitInterval;
+
+function waitForOpponent() {
+    $.post("strategy_api", { action: "wait_for_opponent" }, (result) => {
+        console.log(result);
+        setOpponentStatus("Waiting for opponent...");
+        if (result === "connected") {
+            clearInterval(waitInterval);
+            setOpponentStatus("Connected to opponent");
+            $("#opponent_cards").css({ display: "flex" });
+
+        }
+    });
+}
+
 function attack(my_card, opponent_card) {
     $.post("strategy_api", {
         action: "attack",
@@ -122,7 +147,7 @@ function attack(my_card, opponent_card) {
         fillUserCard(result.user);
         fillOponentCard(card_data);
         setTimeout(fillOponentCard.bind(null, result.after), 2000 * time_scale)
-        setTimeout(waitForOpponent, 5000 * time_scale)
+        setTimeout(waitForOpponentTurn, 5000 * time_scale)
 
     });
 }
@@ -142,3 +167,17 @@ $(".user_card").on("click", function () {
     $(".user_card").css({ border: "1px solid #000" })
     $(this).css({ border: "2px solid #0f0" })
 });
+
+
+function startBot() {
+    startGame("bot");
+}
+
+function startPVP() {
+    $("#opponent_cards").css({ display: "none" });
+    startGame("pvp");
+    waitForOpponent();
+    waitInterval = setInterval(waitForOpponent, 1000);
+}
+
+

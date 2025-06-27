@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block body %}
+  <link rel="stylesheet"
+        href="{{ url_for('static', filename='strategy.css') }}" />
+  <div class="fog" id="fog" style="display: none;">
+    <div class="fight" id="fight">Fight!</div>
+    <br />
+    <br />
+    <div>
+      <p>Not available yet</p>
+    </div>
+  </div>
+  <div class="arena" id="arena">
+    <div id="player_info">
+    </div>
+    <div id="opponent_cards" class="player_cards">
+      {% for card_id in card_ids %}
+        {% include "opponent_card.html" with context %}
+      {% endfor %}
+    </div>
+    <div class="hand" id="hand"></div>
+    <div class="player_cards">
+      {% for card_id in card_ids %}
+        {% include "card.html" with context %}
+      {% endfor %}
+    </div>
+  </div>
+  <div id="log"></div>
+  <script src="{{ url_for('static', filename='strategy.js') }}"></script>
+  <script>
+    startPVP();
+  </script>
+{% endblock %}

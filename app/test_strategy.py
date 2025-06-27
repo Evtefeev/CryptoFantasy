@@ -47,9 +47,9 @@ def test_user_attack_changes_card_info():
     card.health = 100
     card.energy = 1
     card.info.side_effect = [{"health": 100}, {"health": 0}, {"health": 80}]
-    bot.player1.cards[0] = card
-    bot.player2.cards[0] = card
-    bot.player2.active_cards = [0]
+    bot.user.cards[0] = card
+    bot.bot.cards[0] = card
+    bot.bot.active_cards = [0]
 
     bot.game.attack = lambda a, d: setattr(d, "health", 0)
 
@@ -60,23 +60,23 @@ def test_user_attack_changes_card_info():
 
 def test_get_status_victory_or_lose():
     bot = StrategyBot()
-    bot.player1.active_cards = []
-    bot.player2.active_cards = [0]
+    bot.user.active_cards = []
+    bot.bot.active_cards = [0]
     assert bot.getStatus() == "lose!"
 
-    bot.player1.active_cards = [0]
-    bot.player2.active_cards = []
+    bot.user.active_cards = [0]
+    bot.bot.active_cards = []
     assert bot.getStatus() == "Victory!"
 
 
 def test_increase_energy_capped():
     bot = StrategyBot()
-    for card in bot.player1.cards:
+    for card in bot.user.cards:
         card.energy = 0.02
 
     bot.increaseUserEnergy()
 
-    for card in bot.player1.cards:
+    for card in bot.user.cards:
         assert Strategy.MIN_ENERGY <= card.energy <= 1
 
 
@@ -89,8 +89,8 @@ def test_ready_computer_cards():
     card1.card_number = 0
     card2.card_number = 1
 
-    bot.player2.cards = [card1, card2]
-    bot.player2.active_cards = [0, 1]
+    bot.bot.cards = [card1, card2]
+    bot.bot.active_cards = [0, 1]
 
     ready_cards = bot.getReadyComputerCards()
     assert len(ready_cards) == 1
@@ -99,10 +99,10 @@ def test_ready_computer_cards():
 
 def test_strategy_pvp_shares_game():
     pvp_strategies.clear()
-    game1 = StrategyPvPConnector()
+    game1 = StrategyPvPConnector("1")
     assert len(pvp_strategies) == 1
 
-    game2 = StrategyPvPConnector()
+    game2 = StrategyPvPConnector("2")
     assert isinstance(game2, Strategy)
 
 

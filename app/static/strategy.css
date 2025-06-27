@@ -76,9 +76,10 @@
 
 
 .bar-container {
-    margin-top: auto; /* Pushes the bars to the bottom */
-  }
-  
+    margin-top: auto;
+    /* Pushes the bars to the bottom */
+}
+
 
 #hero-health {
     margin-top: 0px;
@@ -139,4 +140,9 @@
 .props-bar {
     display: flex;
     justify-content: space-between;
+}
+
+
+#player_info {
+    font-size: 35px;
 }

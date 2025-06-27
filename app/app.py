@@ -1,3 +1,4 @@
+import logging
 import os
 import threading
 import time
@@ -8,36 +9,15 @@ from charcters import RandomCharacterGenerator
 import actions
 from strategy import Strategy, StrategyBot, StrategyPvPConnector
 from flask_session import Session
+from helpers import *
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
 app.secret_key = os.environ.get('SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
-
-socketio = SocketIO(app)
-
-clients = {}
-
-strategies = {}
-
-
-def get_session_info():
-    return clients[request.sid]
-
-
-def get_startegy() -> Strategy | None:
-
-    if session.get('strategy_id') in strategies.keys():
-        return strategies[session.get('strategy_id')]
-    else:
-        return None
-
-
-def save_strategy(strategy):
-    uid = uuid.uuid4()
-    strategies[uid] = strategy
-    session['strategy_id'] = uid
 
 
 @app.route('/')
@@ -101,56 +81,20 @@ def strategy_api():
             my_card_num, opponent_card_num)
         return {'before': before, 'after': after, 'user': user}
 
-    if request.form.get('action') == 'wait_for_opponent':
+    if request.form.get('action') == 'wait_for_opponent_turn':
         status = strategy.getStatus()
         if status:
             return {'status': status}
         opponent_info, user_info, status = strategy.computerAttack()
         return {'status': status, 'opponent_info': opponent_info, 'user_info': user_info}
 
+    if request.form.get('action') == 'wait_for_opponent':
+        if strategy.isReady():
+            return 'connected'
+        return 'waiting'
+
     return "invalid action"
 
 
-@socketio.on('connect')
-def handle_connect():
-    cid = request.sid
-    print("Connected:", cid)
-    clients[cid] = (cid, actions.Game(), threading.Lock())
-    id, game, game_state_lock = get_session_info()
-    with game_state_lock:
-        emit('gameState', game.getState())
-
-
-@socketio.on('respawn')
-def handle_connect():
-    cid, game, game_state_lock = get_session_info()
-
-    with game_state_lock:
-        game.respawn()
-        emit('gameState', game.getState(), to=cid)
-
-
-@socketio.on('playCard')
-def handle_play_card(card):
-    cid, game, game_state_lock = get_session_info()
-
-    with game_state_lock:
-        damage, message, state = game.attackOpponent()
-        emit('heroAttackDamage', (damage, message), to=cid)
-        emit('gameState', game.getState(), to=cid)
-
-        if damage == 0 or state == "killed":
-            return
-
-        em_id = id(game.opponentHero)
-    time.sleep(1)
-    with game_state_lock:
-        if em_id == id(game.opponentHero):
-            damage, message = game.attackHero()
-            if damage > 0:
-                emit('opponentAttackDamage', (damage, message), to=cid)
-                emit('gameState', game.getState(), to=cid)
-
-
 if __name__ == '__main__':
-    socketio.run(app, host="0.0.0.0", port=8888, debug=True)
+    app.run(app, host="0.0.0.0", port=8888, debug=True)
