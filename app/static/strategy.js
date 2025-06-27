@@ -18,6 +18,10 @@ let enemi_text = "Вражеский герой:"
 
 
 
+let you_turn = false;
+let waitInterval;
+let turnInterval;
+
 function startGame(mode) {
     $.post("strategy_api", { action: "start", "game-mode": mode }, (result) => {
         console.log(result);
@@ -97,21 +101,26 @@ function updateHeroBar(bar, value, max) {
 }
 
 function waitForOpponentTurn() {
+    you_turn = false;
+    setOpponentStatus("Waiting for opponent turn");
     $.post("strategy_api", { action: "wait_for_opponent_turn" }, (result) => {
         console.log(result);
-        try {
+        if (result.status == "waiting") {
+            return
+        }
+        if (result.status == "turn") {
+            clearInterval(turnInterval);
+            you_turn = true;
             let opponent_card = result.opponent_info
             fillOponentCard(opponent_card)
             setTimeout(fillUserCard.bind(null, result.user_info), 2000 * time_scale)
             setTimeout(loadMyCards, 2500 * time_scale)
-        } catch {
-
-        } finally {
-            if (result.status) {
-                alert(result.status);
-                return;
-            }
+            setOpponentStatus("You turn!");
+            return;
         }
+        setOpponentStatus(result.status);
+        clearInterval(turnInterval);
+        alert(result.status);
     });
 }
 
@@ -121,44 +130,61 @@ function setOpponentStatus(status_text) {
 
 }
 
-let waitInterval;
+
 
 function waitForOpponent() {
     $.post("strategy_api", { action: "wait_for_opponent" }, (result) => {
         console.log(result);
         setOpponentStatus("Waiting for opponent...");
-        if (result === "connected") {
+        if (result.status === "connected") {
             clearInterval(waitInterval);
             setOpponentStatus("Connected to opponent");
             $("#opponent_cards").css({ display: "flex" });
-
+            if (!result.turn) {
+                clearInterval(turnInterval);
+                turnInterval = setInterval(waitForOpponentTurn, 1000);
+            } else {
+                setOpponentStatus("You turn!");
+                you_turn = true;
+            }
         }
+
     });
 }
 
 function attack(my_card, opponent_card) {
-    $.post("strategy_api", {
-        action: "attack",
-        my_card_num: my_card,
-        opponent_card_num: opponent_card
-    }, (result) => {
-        let card_data = result.before
-        console.log(result.after);
-        fillUserCard(result.user);
-        fillOponentCard(card_data);
-        setTimeout(fillOponentCard.bind(null, result.after), 2000 * time_scale)
-        setTimeout(waitForOpponentTurn, 5000 * time_scale)
+    if (you_turn) {
+        $.post("strategy_api", {
+            action: "attack",
+            my_card_num: my_card,
+            opponent_card_num: opponent_card
+        }, (result) => {
+            let card_data = result.before
+            console.log(result.after);
+            fillUserCard(result.user);
+            fillOponentCard(card_data);
+            setTimeout(fillOponentCard.bind(null, result.after), 2000 * time_scale)
+            // setTimeout(waitForOpponentTurn, 5000 * time_scale)
+            clearInterval(turnInterval);
+            turnInterval = setInterval(waitForOpponentTurn, 1000);
 
-    });
+        });
+    } else {
+        alert("Waiting opponent turn");
+    }
+
 }
 
-let my_card_num = 0
+let my_card_num = -1
 
 $(".opponent_card").on("click", function () {
     let opponent_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
     $(".opponent_card").css({ border: "1px solid #000" })
     $(this).css({ border: "2px solid #f00" })
-    attack(my_card_num, opponent_card_num);
+    if (my_card_num != -1) {
+        attack(my_card_num, opponent_card_num);
+        console.log(my_card_num, opponent_card_num);
+    }
 });
 
 
@@ -171,13 +197,14 @@ $(".user_card").on("click", function () {
 
 function startBot() {
     startGame("bot");
+    you_turn = true;
 }
 
 function startPVP() {
     $("#opponent_cards").css({ display: "none" });
     startGame("pvp");
-    waitForOpponent();
     waitInterval = setInterval(waitForOpponent, 1000);
+
 }
 
 

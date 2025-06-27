@@ -53,7 +53,7 @@ def test_user_attack_changes_card_info():
 
     bot.game.attack = lambda a, d: setattr(d, "health", 0)
 
-    before, after, user = bot.userAttack(0, 0)
+    before, after, user = bot.userAttack("uid", 0, 0)
     assert before != after
     assert user == {"health": 80}
 
@@ -62,11 +62,11 @@ def test_get_status_victory_or_lose():
     bot = StrategyBot()
     bot.user.active_cards = []
     bot.bot.active_cards = [0]
-    assert bot.getStatus() == "lose!"
+    assert bot.getStatus("uid") == "lose!"
 
     bot.user.active_cards = [0]
     bot.bot.active_cards = []
-    assert bot.getStatus() == "Victory!"
+    assert bot.getStatus("uid") == "Victory!"
 
 
 def test_increase_energy_capped():

@@ -11,15 +11,15 @@ class Player:
         self.active_cards = []
 
     def generateCards(self):
-        self.cards = self.__genetrateCards()
-        self.__generateCardsNumbers()
+        if self.cards == []:
+            self.cards = self.__generateCards()
+            self.__generateCardsNumbers()
 
-    def __genetrateCards(self):
+    def __generateCards(self):
         return [RandomCharacterGenerator.generate_random_character()
                 for _ in range(Strategy.CARDS_NUMBER)]
 
     def __generateCardsNumbers(self):
-        self.active_cards.clear()
         self.active_cards.clear()
 
         for n, card in enumerate(self.cards):
@@ -53,6 +53,15 @@ class Strategy:
     def _getUserCardInfo(self, user, num):
         return user.cards[num].info()
 
+    def getUserCardsInfo(self, user):
+        pass
+
+    def _increaseUserEnergy(self, user):
+        for card in user.cards:
+            if card.card_number in user.active_cards and card.energy < 1:
+                card.energy *= Game.ENERGY_DECREASE_FACTOR / 3
+            card.energy = min(max(card.energy, self.MIN_ENERGY), 1)
+
 
 class StrategyBot(Strategy):
 
@@ -64,15 +73,15 @@ class StrategyBot(Strategy):
         self.bot = self.players["bot"]
         self.generateCards()
 
-    def userAttack(self, my_card_num, opponent_card_num):
+    def userAttack(self, uid, my_card_num, opponent_card_num):
         strategy = self
         before = strategy.getOpponentCardInfo(opponent_card_num)
         strategy.attackOpponent(my_card_num, opponent_card_num)
         after = strategy.getOpponentCardInfo(opponent_card_num)
-        user = strategy.getUserCardInfo(my_card_num)
+        user = strategy.getUserCardInfo(uid, my_card_num)
         return before, after, user
 
-    def getStatus(self):
+    def getStatus(self, uid):
         strategy = self
         opponent_card_num = strategy.getRandomActiveOpponentCardNumber()
         if opponent_card_num == None:
@@ -82,14 +91,16 @@ class StrategyBot(Strategy):
             return 'lose!'
         return None
 
-    def computerAttack(self):
+    def waitAttack(self, uid):
         strategy = self
         user_card_num = strategy.getRandomActiveUserCardNumber()
         opponent_card_num = strategy.getRandomActiveOpponentCardNumber()
         strategy.attackUser(user_card_num, opponent_card_num)
         opponent_info = strategy.getOpponentCardInfo(opponent_card_num)
-        user_info = strategy.getUserCardInfo(user_card_num)
-        status = strategy.getStatus()
+        user_info = strategy.getUserCardInfo(uid, user_card_num)
+        status = strategy.getStatus(uid)
+        if not status:
+            status = "turn"
         return opponent_info, user_info, status
 
     def attackOpponent(self, user_card, opponent_card):
@@ -103,10 +114,10 @@ class StrategyBot(Strategy):
     def getUserCards(self):
         return self.user.cards
 
-    def getUserCardsInfo(self):
+    def getUserCardsInfo(self, uid):
         return self._getUserCardsInfo(self.user)
 
-    def getUserCardInfo(self, num):
+    def getUserCardInfo(self, uid, num):
         return self._getUserCardInfo(self.user, num)
 
     def getOpponentCardInfo(self, num):
@@ -171,8 +182,14 @@ class StrategyPvPGame(Strategy):
     def __init__(self, user_id):
         super().__init__()
         self.players[user_id] = Player()
+        self.last_turn = None
+        self.opponents = {}
 
     def isReady(self):
+        if len(self.players) == 2 and self.opponents == {}:
+            player1, player2 = self.players.keys()
+            self.opponents[player1] = player2
+            self.opponents[player2] = player1
         return len(self.players) == 2
 
     def getUserCardsInfo(self, user_id):
@@ -182,10 +199,58 @@ class StrategyPvPGame(Strategy):
         self.attack(
             self.players[user_id], self.players[opponent_id], user_card, opponent_card)
 
-    def userAttack(self, my_card_num, opponent_card_num):
+    def userAttack(self, uid, my_card_num, opponent_card_num):
         strategy = self
-        before = strategy.getOpponentCardInfo(opponent_card_num)
-        strategy.attackOpponent(my_card_num, opponent_card_num)
-        after = strategy.getOpponentCardInfo(opponent_card_num)
-        user = strategy.getUserCardInfo(my_card_num)
+        before = strategy.getOpponentCardInfo(uid, opponent_card_num)
+        strategy.attackOpponent(uid, my_card_num, opponent_card_num)
+        after = strategy.getOpponentCardInfo(uid, opponent_card_num)
+        user = strategy.getUserCardInfo(uid, my_card_num)
+        self.last_turn = uid
         return before, after, user
+
+    def getUserCardInfo(self, uid, num):
+        return self._getUserCardInfo(self.players[uid], num)
+
+    def getOpponentCardInfo(self, uid, num):
+        return self._getUserCardInfo(self.players[self.getOpponent(uid)], num)
+
+    def getOpponent(self, uid):
+        return self.opponents[uid]
+
+    def attackOpponent(self, uid, user_card, opponent_card):
+        user = self.players[uid]
+        opponent = self.players[self.getOpponent(uid)]
+        self.increaseUserEnergy(user)
+        self.opponent_card_num = user_card
+        self.user_card_num = opponent_card
+        self.attack(user, opponent, user_card, opponent_card)
+        self.last_turn = uid
+
+    def increaseUserEnergy(self, user):
+        return super()._increaseUserEnergy(user)
+
+    def waitAttack(self, uid):
+        if self.last_turn and self.last_turn != uid:
+            player = self.players[uid]
+            strategy = self
+            opponent_info = strategy.getOpponentCardInfo(
+                uid, self.opponent_card_num)
+            user_info = strategy._getUserCardInfo(player, self.user_card_num)
+            status = strategy.getStatus(uid)
+            if not status:
+                status = "turn" if self.last_turn != uid else "waiting"
+            return opponent_info, user_info, status
+        return None, None, "waiting"
+
+    def getStatus(self, uid):
+        user: Player = self.players[uid]
+        opponent: Player = self.players[self.getOpponent(uid)]
+        if len(opponent.active_cards) == 0:
+            return 'Victory!'
+        if len(user.active_cards) == 0:
+            return 'lose!'
+        return None
+
+    def getTurn(self, uid):
+        players = list(self.players.keys())
+        return players[0] == uid

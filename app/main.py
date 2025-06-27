@@ -4,6 +4,7 @@ import threading
 import time
 import uuid
 from flask import Flask, render_template, request, session
+import flask
 from flask_socketio import SocketIO, emit
 from charcters import RandomCharacterGenerator
 import actions
@@ -56,45 +57,49 @@ def strategy_pvp():
 
 @app.route('/strategy_api', methods=['POST'])
 def strategy_api():
+    UID = session.get('uid')
+    if not UID:
+        session['uid'] = uuid.uuid4()
+        UID = session['uid']
 
     if request.form.get('action') == 'start':
         mode = request.form.get('game-mode')
         if mode == "bot":
             strategy = StrategyBot()
         if mode == "pvp":
-            strategy = StrategyPvPConnector()
+            strategy = StrategyPvPConnector(flask.session['uid'])
         strategy.generateCards()
         save_strategy(strategy)
-        return strategy.getUserCardsInfo()
+        return strategy.getUserCardsInfo(flask.session['uid'])
 
-    strategy: StrategyBot = get_startegy()
+    strategy: Strategy = get_startegy()
     if not strategy:
         return 'Game not started'
 
     if request.form.get('action') == 'my_cards':
-        return strategy.getUserCardsInfo()
+        return strategy.getUserCardsInfo(UID)
 
     if request.form.get('action') == 'attack':
         my_card_num = int(request.form.get('my_card_num'))
         opponent_card_num = int(request.form.get('opponent_card_num'))
-        before, after, user = strategy.userAttack(
-            my_card_num, opponent_card_num)
+        before, after, user = strategy.userAttack(UID,
+                                                  my_card_num, opponent_card_num)
         return {'before': before, 'after': after, 'user': user}
 
     if request.form.get('action') == 'wait_for_opponent_turn':
-        status = strategy.getStatus()
+        status = strategy.getStatus(UID)
         if status:
             return {'status': status}
-        opponent_info, user_info, status = strategy.computerAttack()
+        opponent_info, user_info, status = strategy.waitAttack(UID)
         return {'status': status, 'opponent_info': opponent_info, 'user_info': user_info}
 
     if request.form.get('action') == 'wait_for_opponent':
         if strategy.isReady():
-            return 'connected'
-        return 'waiting'
+            return {'status': 'connected', 'turn': strategy.getTurn(UID)}
+        return {'stauts': 'waiting'}
 
     return "invalid action"
 
 
 if __name__ == '__main__':
-    app.run(app, host="0.0.0.0", port=8888, debug=True)
+    app.run(host="0.0.0.0", port=8888, debug=True)
