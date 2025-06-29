@@ -82,12 +82,9 @@ class StrategyBot(Strategy):
         return before, after, user
 
     def getStatus(self, uid):
-        strategy = self
-        opponent_card_num = strategy.getRandomActiveOpponentCardNumber()
-        if opponent_card_num == None:
+        if len(self.bot.active_cards) == 0:
             return 'Victory!'
-        user_card_num = strategy.getRandomActiveUserCardNumber()
-        if user_card_num == None:
+        if len(self.user.active_cards) == 0:
             return 'lose!'
         return None
 
