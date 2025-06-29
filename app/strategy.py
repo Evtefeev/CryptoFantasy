@@ -136,6 +136,7 @@ class StrategyBot(Strategy):
             ready_cards = self.getReadyComputerCards()
             if ready_cards:
                 return random.choice(ready_cards).card_number
+            return None
         return random.choice(self.bot.active_cards)
 
     def increaseUserEnergy(self):
