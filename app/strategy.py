@@ -107,7 +107,7 @@ class StrategyBot(Strategy):
 
     def attackUser(self, user_card, opponent_card):
         
-        self.attack(self.bot, self.user, user_card, opponent_card)
+        self.attack(self.bot, self.user, opponent_card, user_card)
 
     def getUserCards(self):
         return self.user.cards
