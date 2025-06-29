@@ -151,7 +151,7 @@ class StrategyBot(Strategy):
     def getReadyComputerCards(self):
         return [
             card for card in self.bot.cards
-            if card.energy == 1 and card.card_number in self.bot.active_cards
+            if card.energy > 0.9 and card.card_number in self.bot.active_cards
         ]
 
     def isReady(self):
