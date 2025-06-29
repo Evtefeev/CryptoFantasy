@@ -93,6 +93,7 @@ class StrategyBot(Strategy):
 
     def waitAttack(self, uid):
         strategy = self
+        self.increaseOpponentEnergy()
         user_card_num = strategy.getRandomActiveUserCardNumber()
         opponent_card_num = strategy.getRandomActiveOpponentCardNumber()
         strategy.attackUser(user_card_num, opponent_card_num)
@@ -108,7 +109,7 @@ class StrategyBot(Strategy):
         self.attack(self.user, self.bot, user_card, opponent_card)
 
     def attackUser(self, user_card, opponent_card):
-        self.increaseOpponentEnergy()
+        
         self.attack(self.bot, self.user, user_card, opponent_card)
 
     def getUserCards(self):
