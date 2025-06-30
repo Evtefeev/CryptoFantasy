@@ -59,13 +59,13 @@ def strategy_pvp():
 def strategy_api():
     UID = session.get('uid')
     if not UID:
-        session['uid'] = uuid.uuid4()
+        session['uid'] = str(uuid.uuid4())
         UID = session['uid']
 
     if request.form.get('action') == 'start':
         mode = request.form.get('game-mode')
         if mode == "bot":
-            strategy = StrategyBot()
+            strategy = StrategyBot(UID)
         if mode == "pvp":
             strategy = StrategyPvPConnector(flask.session['uid'])
         strategy.generateCards()
@@ -82,9 +82,20 @@ def strategy_api():
     if request.form.get('action') == 'attack':
         my_card_num = int(request.form.get('my_card_num'))
         opponent_card_num = int(request.form.get('opponent_card_num'))
-        before, after, user = strategy.userAttack(UID,
-                                                  my_card_num, opponent_card_num)
-        return {'before': before, 'after': after, 'user': user}
+        try:
+            before, after, user = strategy.userAttack(
+                UID, my_card_num, opponent_card_num)
+            return {
+                "status": "ok",
+                "before": before,
+                "after": after,
+                "user": user
+            }
+        except Exception as e:
+            return {
+                "status": "error",
+                "message": str(e)
+            }, 400
 
     if request.form.get('action') == 'wait_for_opponent_turn':
         status = strategy.getStatus(UID)

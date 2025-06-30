@@ -1,37 +1,35 @@
+from unittest.mock import MagicMock
 import pytest
-from unittest.mock import MagicMock, patch
-from strategy import Player, StrategyBot, StrategyPvPConnector, Strategy, pvp_strategies
+import random
+from actions import RandomCharacterGenerator
+from strategy import Player, StrategyBot, StrategyPvPConnector, Strategy, pvp_strategies, MemoryStorage
 
 
 @pytest.fixture
-def mock_card():
-    # Create a mock card with the necessary attributes/methods
-    card = MagicMock()
-    card.health = 100
-    card.energy = 0.5
-    card.info.return_value = {"health": 100, "energy": 0.5}
-    return card
+def storage():
+    return MemoryStorage()
 
 
-def test_generate_cards_assigns_cards():
-    player = Player()
-    with patch('strategy.RandomCharacterGenerator.generate_random_character') as mock_gen:
-        mock_gen.return_value = MagicMock()
-        player.generateCards()
-        assert len(player.cards) == Strategy.CARDS_NUMBER
-        assert len(player.active_cards) == Strategy.CARDS_NUMBER
-        assert all(isinstance(i, int) for i in player.active_cards)
+def test_generate_cards_assigns_cards(storage):
+    player = Player(storage, "test_generate")
+    player.generateCards()
+    assert len(player.cards) == Strategy.CARDS_NUMBER
+    assert len(player.active_cards) == Strategy.CARDS_NUMBER
+    assert all(hasattr(card, 'health')
+               for card in player.cards)  # Проверяем что это настоящие карты
 
 
-def test_attack_removes_dead_card(mock_card):
-    strategy = Strategy()
-    attacker = Player()
-    defender = Player()
+def test_attack_removes_dead_card(storage):
+    strategy = Strategy(storage, users_ids=["attacker", "defender"])
+    attacker = strategy.players["attacker"]
+    defender = strategy.players["defender"]
 
-    attacker.cards = [mock_card]
-    defender.cards = [mock_card]
+    # Генерируем карты с реальными объектами
+    attacker.cards = [RandomCharacterGenerator.generate_random_character()]
+    defender.cards = [RandomCharacterGenerator.generate_random_character()]
     defender.active_cards = [0]
 
+    # Зануляем здоровье при атаке
     strategy.game = MagicMock()
     strategy.game.attack = lambda a, d: setattr(d, "health", 0)
 
@@ -39,38 +37,35 @@ def test_attack_removes_dead_card(mock_card):
     assert 0 not in defender.active_cards
 
 
-def test_user_attack_changes_card_info():
-    bot = StrategyBot()
+def test_user_attack_changes_card_info(storage):
+    bot = StrategyBot("user", storage)
 
-    # Mocking the card info methods
-    card = MagicMock()
-    card.health = 100
-    card.energy = 1
-    card.info.side_effect = [{"health": 100}, {"health": 0}, {"health": 80}]
+    card = RandomCharacterGenerator.generate_random_character()
     bot.user.cards[0] = card
-    bot.bot.cards[0] = card
+    bot.bot.cards[0] = RandomCharacterGenerator.generate_random_character()
     bot.bot.active_cards = [0]
 
     bot.game.attack = lambda a, d: setattr(d, "health", 0)
 
-    before, after, user = bot.userAttack("uid", 0, 0)
+    before, after, user = bot.userAttack("user", 0, 0)
     assert before != after
-    assert user == {"health": 80}
+    assert isinstance(user, dict)
+    assert "health" in user
 
 
-def test_get_status_victory_or_lose():
-    bot = StrategyBot()
+def test_get_status_victory_or_lose(storage):
+    bot = StrategyBot('user', storage)
     bot.user.active_cards = []
     bot.bot.active_cards = [0]
-    assert bot.getStatus("uid") == "lose!"
+    assert bot.getStatus("user") == "lose!"
 
     bot.user.active_cards = [0]
     bot.bot.active_cards = []
-    assert bot.getStatus("uid") == "Victory!"
+    assert bot.getStatus("user") == "Victory!"
 
 
-def test_increase_energy_capped():
-    bot = StrategyBot()
+def test_increase_energy_capped(storage):
+    bot = StrategyBot('user', storage)
     for card in bot.user.cards:
         card.energy = 0.02
 
@@ -80,10 +75,10 @@ def test_increase_energy_capped():
         assert Strategy.MIN_ENERGY <= card.energy <= 1
 
 
-def test_ready_computer_cards():
-    bot = StrategyBot()
-    card1 = MagicMock()
-    card2 = MagicMock()
+def test_ready_computer_cards(storage):
+    bot = StrategyBot('user', storage)
+    card1 = RandomCharacterGenerator.generate_random_character()
+    card2 = RandomCharacterGenerator.generate_random_character()
     card1.energy = 1
     card2.energy = 0.5
     card1.card_number = 0
@@ -104,7 +99,3 @@ def test_strategy_pvp_shares_game():
 
     game2 = StrategyPvPConnector("2")
     assert isinstance(game2, Strategy)
-
-
-if __name__ == "__main__":
-    pytest.main()

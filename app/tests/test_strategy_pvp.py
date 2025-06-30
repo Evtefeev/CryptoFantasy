@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
 
-from strategy import Player, StrategyPvPGame
+from strategy import Player, StrategyPvP, StrategyPvPGame
 
 # Assuming you import like this:
 # from strategy_game import StrategyPvPGame, Player, StrategyGame, Game
@@ -41,8 +41,8 @@ def test_game_initialization(monkey_patch_game):
 
 
 def test_player_ready(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    game.players["user2"] = Player()
+    game = StrategyPvP("user1")
+    game = StrategyPvP("user2")
     ready = game.isReady()
     assert ready is True
     assert game.opponents["user1"] == "user2"
@@ -112,3 +112,24 @@ def test_lose_condition(monkey_patch_game):
     status = game.getStatus("user1")
     assert status == "lose!"
 
+
+def test_turn_order(monkey_patch_game):
+    game = StrategyPvPGame("user1")
+    game.players["user2"] = Player()
+    game.isReady()
+    game.generateCards()
+
+    # Изначально last_turn должен быть None (никто не ходил)
+    assert game.last_turn is None
+
+    # user1 делает первый ход
+    game.userAttack("user1", 0, 0)
+    assert game.last_turn == "user1"
+
+    # Попытка user1 снова ходить должна вызвать ошибку
+    with pytest.raises(Exception):
+        game.userAttack("user1", 0, 0)
+
+    # user2 теперь может ходить
+    game.userAttack("user2", 0, 0)
+    assert game.last_turn == "user2"
