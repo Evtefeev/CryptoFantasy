@@ -3,11 +3,11 @@ import random
 import uuid
 
 from flask import json
-from actions import RandomCharacterGenerator, StrategyGame, Game
+from app.actions import RandomCharacterGenerator, StrategyGame, Game
 import logging
-from base_strategy import Player, Strategy
-from helpers import StrategyStorage
-from storages import Storage
+from app.base_strategy import Player, Strategy
+from app.helpers import StrategyStorage
+from app.storages import Storage
 
 import conf
 

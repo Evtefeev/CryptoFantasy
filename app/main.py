@@ -1,16 +1,12 @@
-import sys
-
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-
 import logging
 import os
 import uuid
 from flask import Flask, render_template, request, session
 import flask
-from strategy import Strategy, StrategyBot, StrategyPvP, StrategyPvPConnector, StrategyPvPGame
+from app.strategy import Strategy, StrategyBot, StrategyPvP, StrategyPvPConnector, StrategyPvPGame
 from flask_session import Session
-from helpers import StrategyStorage
-import conf
+from app.helpers import StrategyStorage
+import app.conf as conf
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -81,8 +77,9 @@ def strategy_api():
         type = StrategyBot if session['game-mode'] == "bot" else StrategyPvPGame
     except KeyError:
         return 'Game not started'
-        
-    strategy: Strategy = strategyStorage.get_strategy(session['strategy_id'], type)
+
+    strategy: Strategy = strategyStorage.get_strategy(
+        session['strategy_id'], type)
     if not strategy:
         return 'Game not started'
 

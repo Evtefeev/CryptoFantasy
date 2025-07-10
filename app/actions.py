@@ -1,5 +1,5 @@
 import random
-from charcters import Character, RandomCharacterGenerator
+from app.charcters import Character, RandomCharacterGenerator
 
 
 class Game():

@@ -1,6 +1,6 @@
 import logging
 import uuid
-from storages import MemoryStorage
+from app.storages import MemoryStorage
 
 
 class StrategyStorage:

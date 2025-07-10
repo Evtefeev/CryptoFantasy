@@ -3,12 +3,12 @@ import logging
 import pickle
 import uuid
 from flask import json
-from actions import Game, StrategyGame
+from app.actions import Game, StrategyGame
 from helpers import StrategyStorage
-import conf
-from charcters import RandomCharacterGenerator
-from conf import STORAGE
-from storages import Storage
+import app.conf as conf
+from app.charcters import RandomCharacterGenerator
+from app.conf import STORAGE
+from app.storages import Storage
 
 logging.basicConfig(level=logging.DEBUG)
 
