@@ -11,7 +11,7 @@ dotenv.load_dotenv()
 REDIS_HOST = os.environ.get('REDIS_HOST')
 REDIS_PORT = os.environ.get('REDIS_PORT')
 REDIS_DB = os.environ.get('REDIS_DB')
-
+REDIS_URL = os.environ.get('REDIS_URL')
 
 class Storage(ABC):
     @abstractmethod
@@ -55,7 +55,8 @@ def MemoryStorageTest():
 
 class RedisStorage(Storage):
     def __init__(self, host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB):
-        self.redis = redis.StrictRedis(host=host, port=port, db=db)
+        # self.redis = redis.StrictRedis(host=host, port=port, db=db)
+        self.redis = redis.Redis.from_url(REDIS_URL)
 
     def _make_key(self, type: str, label: str) -> str:
         return f"{type}:{label}"
