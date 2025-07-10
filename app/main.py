@@ -1,8 +1,11 @@
 import logging
 import os
+import pickle
 import uuid
+import dotenv
 from flask import Flask, render_template, request, session
 import flask
+import redis
 from app.strategy import Strategy, StrategyBot, StrategyPvP, StrategyPvPConnector, StrategyPvPGame
 from flask_session import Session
 from app.helpers import StrategyStorage
@@ -11,9 +14,21 @@ import app.conf as conf
 logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
+dotenv.load_dotenv()
 
 app.secret_key = os.environ.get('SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
+REDIS_URL = os.environ.get('REDIS_URL')
+
+app.config['SESSION_SERIALIZER'] = pickle
+
+app.config['SESSION_TYPE'] = 'redis'
+app.config['SESSION_REDIS'] = redis.Redis.from_url(REDIS_URL)
+app.config['SESSION_PERMANENT'] = False
+# app.config['SESSION_USE_SIGNER'] = True  # підпис для безпеки
+app.config['SESSION_KEY_PREFIX'] = 'session:'
+
+
 Session(app)
 
 

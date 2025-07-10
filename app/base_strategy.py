@@ -61,7 +61,7 @@ class Player:
 
 
 class Strategy:
-    CHEAT_MODE = 1
+    CHEAT_MODE = conf.ENABLE_CHEAT
     CARDS_NUMBER = 6
     MIN_ENERGY = 0.05
     SKIP_FIELDS = ['storage', 'game', 'user', 'bot']

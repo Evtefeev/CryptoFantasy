@@ -6,7 +6,7 @@ import uuid
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, emit
 from app.charcters import RandomCharacterGenerator
-import app.actions
+import app.actions as actions
 from app.strategy import Strategy, StrategyBot, StrategyPvPConnector
 from flask_session import Session
 from app.helpers import *
