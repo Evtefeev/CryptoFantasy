@@ -5,11 +5,11 @@ import time
 import uuid
 from flask import Flask, render_template, request, session
 from flask_socketio import SocketIO, emit
-from charcters import RandomCharacterGenerator
-import actions
-from strategy import Strategy, StrategyBot, StrategyPvPConnector
+from app.charcters import RandomCharacterGenerator
+import app.actions
+from app.strategy import Strategy, StrategyBot, StrategyPvPConnector
 from flask_session import Session
-from helpers import *
+from app.helpers import *
 
 
 

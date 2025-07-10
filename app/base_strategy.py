@@ -4,7 +4,7 @@ import pickle
 import uuid
 from flask import json
 from app.actions import Game, StrategyGame
-from helpers import StrategyStorage
+from app.helpers import StrategyStorage
 import app.conf as conf
 from app.charcters import RandomCharacterGenerator
 from app.conf import STORAGE
