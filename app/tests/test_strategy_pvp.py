@@ -1,135 +1,115 @@
 import pytest
-from unittest.mock import MagicMock
+from strategy import StrategyPvPConnector, StrategyPvPGame, StrategyStorage
+from charcters import Character
+from base_strategy import Player
+from storages import MemoryStorage
 
-from strategy import Player, StrategyPvP, StrategyPvPGame
-
-# Assuming you import like this:
-# from strategy_game import StrategyPvPGame, Player, StrategyGame, Game
-
-class DummyCard:
-    def __init__(self):
-        self.health = 100
-        self.energy = 0.1
-        self.card_number = None
-
-    def info(self):
-        return {"health": self.health, "energy": self.energy}
-
-    def set_card_number(self, num):
-        self.card_number = num
-
-class DummyGame:
-    ENERGY_DECREASE_FACTOR = 0.9
-
-    def __init__(self):
-        self.damage_factor = 10
-
-    def attack(self, attacker, defender):
-        defender.health -= 20  # example attack
 
 @pytest.fixture
-def monkey_patch_game(monkeypatch):
-    monkeypatch.setattr("strategy.RandomCharacterGenerator.generate_random_character", lambda: DummyCard())
+def storage():
+    return MemoryStorage()
+
+@pytest.fixture(autouse=True)
+def reset_memory_storage():
+    storage = MemoryStorage()
+    storage.clear()
+
+
+@pytest.fixture
+def dummy_game(monkeypatch):
+    class DummyGame:
+        ENERGY_DECREASE_FACTOR = 0.9
+
+        def __init__(self):
+            self.damage_factor = 10
+
+        def attack(self, attacker, defender, cheat=False):
+            defender.health -= 20
+
     monkeypatch.setattr("strategy.StrategyGame", DummyGame)
     monkeypatch.setattr("strategy.Game", DummyGame)
 
 
-def test_game_initialization(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    assert "user1" in game.players
-    assert isinstance(game.players["user1"], Player)
+def test_strategy_pvp_restore_game(storage, dummy_game):
+    game1 = StrategyPvPConnector("1", storage)
+    game2 = StrategyPvPConnector("2", storage)
+    game2.userAttack("1", 0, 0)
+    restored_game = StrategyStorage(storage).get_strategy(game2.uid, StrategyPvPGame)
+    assert len(restored_game.players) == 2
 
 
-def test_player_ready(monkey_patch_game):
-    game = StrategyPvP("user1")
-    game = StrategyPvP("user2")
-    ready = game.isReady()
-    assert ready is True
-    assert game.opponents["user1"] == "user2"
-    assert game.opponents["user2"] == "user1"
+def test_strategy_pvp_player_ready(storage, dummy_game):
+    StrategyPvPConnector("1", storage)
+    game = StrategyPvPConnector("2", storage)
+    assert game.isReady()
+    assert game.opponents["1"] == "2"
+    assert game.opponents["2"] == "1"
 
 
-def test_card_generation(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    game.players["user1"].generateCards()
-    assert len(game.players["user1"].cards) == game.CARDS_NUMBER
-    assert all(isinstance(c, DummyCard) for c in game.players["user1"].cards)
-
-
-def test_attack_flow(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    game.players["user2"] = Player()
-    game.isReady()
+def test_strategy_pvp_generate_cards(storage, dummy_game):
+    game = StrategyPvPConnector("1", storage)
     game.generateCards()
+    player = game.players["1"]
+    assert len(player.cards) == game.CARDS_NUMBER
+    assert all(isinstance(c, Character) for c in player.cards)
 
-    uid, opponent_id = "user1", "user2"
-    user_card = 0
-    opponent_card = 0
-    before, after, user = game.userAttack(uid, user_card, opponent_card)
 
-    assert before["health"] == 100
-    assert after["health"] == 80  # Assuming 20 damage
+def test_strategy_pvp_attack_flow(storage, dummy_game):
+    StrategyPvPConnector("1", storage)
+    game = StrategyPvPConnector("2", storage)
+    game.generateCards()
+    before, after, user = game.userAttack("1", 0, 0)
+    assert before["health"] > after["health"]
     assert "energy" in user
 
 
-def test_wait_attack(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    game.players["user2"] = Player()
-    game.isReady()
+def test_strategy_pvp_wait_attack(storage, dummy_game):
+    StrategyPvPConnector("1", storage)
+    game = StrategyPvPConnector("2", storage)
     game.generateCards()
-    game.userAttack("user1", 0, 0)
+    game.userAttack("1", 0, 0)
 
-    opponent_info, user_info, status = game.waitAttack("user2")
+    opponent_info, user_info, status = game.waitAttack("2")
     assert opponent_info["health"] <= 100
     assert user_info["health"] <= 100
     assert status in ["turn", "waiting"]
 
 
-def test_victory_condition(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    game.players["user2"] = Player()
-    game.isReady()
+def test_strategy_pvp_victory(storage, dummy_game):
+    StrategyPvPConnector("1", storage)
+    game = StrategyPvPConnector("2", storage)
     game.generateCards()
-    # Kill all opponent cards
-    for card in game.players["user2"].cards:
+
+    for card in game.players["2"].cards:
         card.health = 0
-    game.players["user2"].active_cards.clear()
+    game.players["2"].active_cards.clear()
 
-    status = game.getStatus("user1")
-    assert status == "Victory!"
+    assert game.getStatus("1") == "Victory!"
 
 
-def test_lose_condition(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    game.players["user2"] = Player()
-    game.isReady()
+def test_strategy_pvp_lose(storage, dummy_game):
+    StrategyPvPConnector("1", storage)
+    game = StrategyPvPConnector("2", storage)
     game.generateCards()
-    # Kill all user cards
-    for card in game.players["user1"].cards:
+
+    for card in game.players["1"].cards:
         card.health = 0
-    game.players["user1"].active_cards.clear()
+    game.players["1"].active_cards.clear()
 
-    status = game.getStatus("user1")
-    assert status == "lose!"
+    assert game.getStatus("1") == "lose!"
 
 
-def test_turn_order(monkey_patch_game):
-    game = StrategyPvPGame("user1")
-    game.players["user2"] = Player()
-    game.isReady()
+def test_strategy_pvp_turn_order(storage, dummy_game):
+    StrategyPvPConnector("1", storage)
+    game = StrategyPvPConnector("2", storage)
     game.generateCards()
 
-    # Изначально last_turn должен быть None (никто не ходил)
     assert game.last_turn is None
+    game.userAttack("1", 0, 0)
+    assert game.last_turn == "1"
 
-    # user1 делает первый ход
-    game.userAttack("user1", 0, 0)
-    assert game.last_turn == "user1"
-
-    # Попытка user1 снова ходить должна вызвать ошибку
     with pytest.raises(Exception):
-        game.userAttack("user1", 0, 0)
+        game.userAttack("1", 0, 0)
 
-    # user2 теперь может ходить
-    game.userAttack("user2", 0, 0)
-    assert game.last_turn == "user2"
+    game.userAttack("2", 0, 0)
+    assert game.last_turn == "2"

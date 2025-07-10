@@ -1,16 +1,12 @@
 import logging
 import os
-import threading
-import time
 import uuid
 from flask import Flask, render_template, request, session
 import flask
-from flask_socketio import SocketIO, emit
-from charcters import RandomCharacterGenerator
-import actions
-from strategy import Strategy, StrategyBot, StrategyPvPConnector
+from strategy import Strategy, StrategyBot, StrategyPvP, StrategyPvPConnector, StrategyPvPGame
 from flask_session import Session
-from helpers import *
+from helpers import StrategyStorage
+import conf
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -55,6 +51,9 @@ def strategy_pvp():
     )
 
 
+strategyStorage = StrategyStorage(conf.STORAGE)
+
+
 @app.route('/strategy_api', methods=['POST'])
 def strategy_api():
     UID = session.get('uid')
@@ -64,15 +63,22 @@ def strategy_api():
 
     if request.form.get('action') == 'start':
         mode = request.form.get('game-mode')
+        session['game-mode'] = mode
         if mode == "bot":
             strategy = StrategyBot(UID)
         if mode == "pvp":
             strategy = StrategyPvPConnector(flask.session['uid'])
         strategy.generateCards()
-        save_strategy(strategy)
+        strategy.CHEAT_MODE = conf.ENABLE_CHEAT
+        # uid = strategyStorage.save_strategy(strategy)
+        session['strategy_id'] = strategy.uid
         return strategy.getUserCardsInfo(flask.session['uid'])
-
-    strategy: Strategy = get_startegy()
+    try:
+        type = StrategyBot if session['game-mode'] == "bot" else StrategyPvPGame
+    except KeyError:
+        return 'Game not started'
+        
+    strategy: Strategy = strategyStorage.get_strategy(session['strategy_id'], type)
     if not strategy:
         return 'Game not started'
 
@@ -113,4 +119,4 @@ def strategy_api():
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8888, debug=True)
+    app.run(port=8888, debug=True)

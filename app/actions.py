@@ -16,7 +16,7 @@ class Game():
         self.hero = RandomCharacterGenerator.generate_random_character()
         self.opponentHero = RandomCharacterGenerator.generate_random_character()
 
-    def attack(self, attacker: Character, defender: Character) -> float:
+    def attack(self, attacker: Character, defender: Character, cheat = False) -> float:
         if attacker.health <= 0 or defender.health <= 0:
             return 0
         damage = round(attacker.attack/defender.defense -
@@ -24,6 +24,8 @@ class Game():
         if isinstance(attacker, defender.counter_class):
             damage *= 2
         damage *= self.damage_factor * attacker.energy
+        if cheat:
+            damage *= 1000
         defender.health -= damage
         attacker.energy /= Game.ENERGY_DECREASE_FACTOR
         return damage
