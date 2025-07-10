@@ -1,19 +1,15 @@
-import pickle
 import random
-import uuid
 
-from flask import json
-from app.actions import RandomCharacterGenerator, StrategyGame, Game
 import logging
 from app.base_strategy import Player, Strategy
 from app.helpers import StrategyStorage
-from app.storages import Storage
 
 import app.conf as conf
 
 logging.basicConfig(level=logging.DEBUG)
 
 STORAGE = conf.STORAGE
+
 
 class StrategyBot(Strategy):
 
@@ -131,13 +127,12 @@ def StrategyPvP(user_id, storage=conf.STORAGE):
 
 
 class StrategyPvPGame(Strategy):
-    def __init__(self, user_id = None, storage=conf.STORAGE):
+    def __init__(self, user_id=None, storage=conf.STORAGE):
         super().__init__()
         if user_id:
             self.players[user_id] = Player(user_id, storage)
         self.last_turn = None
         self.opponents = {}
-
 
     def prepare(self):
         if len(self.players) == 2 and self.opponents == {}:

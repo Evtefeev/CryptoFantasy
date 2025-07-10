@@ -6,7 +6,7 @@ import dotenv
 from flask import Flask, render_template, request, session
 import flask
 import redis
-from app.strategy import Strategy, StrategyBot, StrategyPvP, StrategyPvPConnector, StrategyPvPGame
+from app.strategy import Strategy, StrategyBot, StrategyPvPConnector, StrategyPvPGame
 from flask_session import Session
 from app.helpers import StrategyStorage
 import app.conf as conf

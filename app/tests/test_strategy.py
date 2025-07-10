@@ -1,4 +1,3 @@
-import logging.config
 import pytest
 from actions import RandomCharacterGenerator
 from helpers import StrategyStorage
