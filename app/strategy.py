@@ -9,7 +9,7 @@ from app.base_strategy import Player, Strategy
 from app.helpers import StrategyStorage
 from app.storages import Storage
 
-import conf
+import app.conf as conf
 
 logging.basicConfig(level=logging.DEBUG)
 
