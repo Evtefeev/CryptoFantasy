@@ -122,6 +122,7 @@
 
 
 @media (max-width: 1250px) {
+
     /* .player_cards{
         font-size: ;
     } */
@@ -130,7 +131,7 @@
         height: 27vw;
         margin: 5px;
         margin-top: 15px;
-        font-size: 23px;
+        font-size: 32px;
     }
 
     .bar-container {
@@ -138,6 +139,12 @@
     }
 
 
+}
+
+@media (max-width: 350px) {
+    .player_cards {
+        font-size: 15px;
+    }
 }
 
 .props-bar {
