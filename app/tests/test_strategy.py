@@ -1,9 +1,9 @@
 import pytest
-from actions import RandomCharacterGenerator
-from helpers import StrategyStorage
-from strategy import StrategyBot, StrategyPvP, StrategyPvPConnector, Strategy, StrategyPvPGame
-from storages import MemoryStorage
-from base_strategy import Player
+from app.actions import RandomCharacterGenerator
+from app.helpers import StrategyStorage
+from app.strategy import StrategyBot, StrategyPvP, StrategyPvPConnector, Strategy, StrategyPvPGame
+from app.storages import MemoryStorage
+from app.base_strategy import Player
 
 @pytest.fixture
 def storage():
@@ -102,7 +102,7 @@ def test_strategy_pvp_shares_game(storage):
     game2 = StrategyPvPConnector("2", storage)
     assert isinstance(game2, Strategy)
     assert isinstance(game1, Strategy)
-    game = StrategyStorage(storage).get_strategy(game1.uid, StrategyPvP)
+    game = StrategyStorage(storage).get_strategy(game1.uid, StrategyPvPGame)
     assert len(game.players) == 2
 
 

@@ -1,8 +1,8 @@
 import pytest
-from strategy import StrategyPvPConnector, StrategyPvPGame, StrategyStorage
-from charcters import Character
-from base_strategy import Player
-from storages import MemoryStorage
+from app.strategy import StrategyPvPConnector, StrategyPvPGame, StrategyStorage
+from app.charcters import Character
+from app.base_strategy import Player
+from app.storages import MemoryStorage
 
 
 @pytest.fixture
@@ -15,22 +15,7 @@ def reset_memory_storage():
     storage.clear()
 
 
-@pytest.fixture
-def dummy_game(monkeypatch):
-    class DummyGame:
-        ENERGY_DECREASE_FACTOR = 0.9
-
-        def __init__(self):
-            self.damage_factor = 10
-
-        def attack(self, attacker, defender, cheat=False):
-            defender.health -= 20
-
-    monkeypatch.setattr("strategy.StrategyGame", DummyGame)
-    monkeypatch.setattr("strategy.Game", DummyGame)
-
-
-def test_strategy_pvp_restore_game(storage, dummy_game):
+def test_strategy_pvp_restore_game(storage):
     game1 = StrategyPvPConnector("1", storage)
     game2 = StrategyPvPConnector("2", storage)
     game2.userAttack("1", 0, 0)
@@ -38,7 +23,7 @@ def test_strategy_pvp_restore_game(storage, dummy_game):
     assert len(restored_game.players) == 2
 
 
-def test_strategy_pvp_player_ready(storage, dummy_game):
+def test_strategy_pvp_player_ready(storage):
     StrategyPvPConnector("1", storage)
     game = StrategyPvPConnector("2", storage)
     assert game.isReady()
@@ -46,7 +31,7 @@ def test_strategy_pvp_player_ready(storage, dummy_game):
     assert game.opponents["2"] == "1"
 
 
-def test_strategy_pvp_generate_cards(storage, dummy_game):
+def test_strategy_pvp_generate_cards(storage):
     game = StrategyPvPConnector("1", storage)
     game.generateCards()
     player = game.players["1"]
@@ -54,7 +39,7 @@ def test_strategy_pvp_generate_cards(storage, dummy_game):
     assert all(isinstance(c, Character) for c in player.cards)
 
 
-def test_strategy_pvp_attack_flow(storage, dummy_game):
+def test_strategy_pvp_attack_flow(storage):
     StrategyPvPConnector("1", storage)
     game = StrategyPvPConnector("2", storage)
     game.generateCards()
@@ -63,19 +48,20 @@ def test_strategy_pvp_attack_flow(storage, dummy_game):
     assert "energy" in user
 
 
-def test_strategy_pvp_wait_attack(storage, dummy_game):
+def test_strategy_pvp_wait_attack(storage):
     StrategyPvPConnector("1", storage)
     game = StrategyPvPConnector("2", storage)
     game.generateCards()
-    game.userAttack("1", 0, 0)
+    health = game.players["2"].cards[0].health
+    before, after, user = game.userAttack("1", 0, 0)
 
     opponent_info, user_info, status = game.waitAttack("2")
-    assert opponent_info["health"] <= 100
-    assert user_info["health"] <= 100
+    assert user_info["health"] <= health
+    assert opponent_info["energy"] <= user['energy']
     assert status in ["turn", "waiting"]
 
 
-def test_strategy_pvp_victory(storage, dummy_game):
+def test_strategy_pvp_victory(storage):
     StrategyPvPConnector("1", storage)
     game = StrategyPvPConnector("2", storage)
     game.generateCards()
@@ -87,7 +73,7 @@ def test_strategy_pvp_victory(storage, dummy_game):
     assert game.getStatus("1") == "Victory!"
 
 
-def test_strategy_pvp_lose(storage, dummy_game):
+def test_strategy_pvp_lose(storage):
     StrategyPvPConnector("1", storage)
     game = StrategyPvPConnector("2", storage)
     game.generateCards()
@@ -99,7 +85,7 @@ def test_strategy_pvp_lose(storage, dummy_game):
     assert game.getStatus("1") == "lose!"
 
 
-def test_strategy_pvp_turn_order(storage, dummy_game):
+def test_strategy_pvp_turn_order(storage):
     StrategyPvPConnector("1", storage)
     game = StrategyPvPConnector("2", storage)
     game.generateCards()

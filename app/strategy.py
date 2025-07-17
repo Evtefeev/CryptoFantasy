@@ -103,6 +103,7 @@ def StrategyPvPConnector(user_id, storage=conf.STORAGE):
     if prev_strategy_id and prev_strategy_id != -1:
         game: Strategy = StrategyStorage(storage).get_strategy(
             prev_strategy_id, StrategyPvPGame)
+        game.storage = storage
         game.players[user_id] = Player(user_id, storage)
         game.generateCards()
         for p in game.players:
