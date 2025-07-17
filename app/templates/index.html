@@ -1,19 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Легенды Вечности</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-  </head>
-  <body>
-    <div class="game-container">
-      <h1>Легенды Вечности</h1>
-      {% block body %}
-          <a class="game_link" href="/clicker">Clicker</a>
-          <a class="game_link" href="/strategy">Strategy</a>
-      {% endblock %}
+
+<head>
+  <title>Legends of Eternity</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+</head>
+
+<body>
+  <div class="game-container">
+    <h1>Legends of Eternity</h1>
+    {% block body %}
+    <div class='description'>
+      <p>
+        Legends of Eternity is a strategic fantasy card game where ancient forces clash in an eternal battle for power
+        and destiny. Players take on the role of powerful heroes, summoning mythical creatures, casting arcane spells,
+        and forging legendary artifacts to outwit their opponents and shape the fate of the realms.
+      <p>
+        Build your deck from a vast collection of cards representing the five primal elements—Fire, Water, Earth, Air,
+        and Shadow. Each match is a test of wits, timing, and resource management, where a single card can turn the tide
+        of battle.
+      </p>
+      <p>
+        Whether you seek glory in solo campaigns, challenge rivals in PvP duels, or form alliances in epic multiplayer
+        modes, Legends of Eternity invites you into a world where magic lives, heroes rise, and legends never die.
+      </p>
     </div>
-  </body>
+
+    <a class="game_link" href="/strategy">Begin Journey</a>
+    {% endblock %}
+  </div>
+</body>
+
 </html>
