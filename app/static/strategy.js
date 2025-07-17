@@ -126,8 +126,7 @@ function waitForOpponentTurn() {
 
 
 function setOpponentStatus(status_text) {
-    $("#player_info").text(status_text);
-
+    $("#player_info_game").text(status_text);
 }
 
 
