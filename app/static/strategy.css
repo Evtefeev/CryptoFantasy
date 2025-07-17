@@ -141,6 +141,44 @@
 
 }
 
+
+html {
+    font-size: 15px;
+    /* adjust this */
+}
+
+body,
+p,
+h1 {
+    font-size: 1rem;
+}
+
+
+
+@media (min-width: 320px) and (max-width: 340px) {
+    html {
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 340px) and (max-width: 375px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 350px) and (max-width: 390px) {
+    html {
+        font-size: 15px;
+    }
+}
+
+@media (min-width: 400px) {
+    html {
+        font-size: 17px;
+    }
+}
+
 @media (max-width: 350px) {
     .player_cards {
         font-size: 15px;
