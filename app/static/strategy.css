@@ -111,7 +111,9 @@
 }
 
 
-
+#player_info_game {
+    font-size: 15px;
+}
 
 #hero-health,
 #hero-energy {
@@ -123,74 +125,22 @@
 
 @media (max-width: 1250px) {
 
-    /* .player_cards{
-        font-size: ;
-    } */
+
     .card {
         width: 30vw;
         height: 27vw;
         margin: 5px;
         margin-top: 15px;
-        font-size: 32px;
+        font-size: 0.8rem;
     }
 
-    .bar-container {
-        height: 35px;
-    }
-
-
-}
-
-
-html {
-    font-size: 15px;
-    /* adjust this */
-}
-
-body,
-p,
-h1 {
-    font-size: 1rem;
 }
 
 
 
-@media (min-width: 320px) and (max-width: 340px) {
-    html {
-        font-size: 12px;
-    }
-}
 
-@media (min-width: 340px) and (max-width: 375px) {
-    html {
-        font-size: 14px;
-    }
-}
-
-@media (min-width: 350px) and (max-width: 390px) {
-    html {
-        font-size: 15px;
-    }
-}
-
-@media (min-width: 400px) {
-    html {
-        font-size: 17px;
-    }
-}
-
-@media (max-width: 350px) {
-    .player_cards {
-        font-size: 15px;
-    }
-}
 
 .props-bar {
     display: flex;
     justify-content: space-between;
-}
-
-
-#player_info_game {
-    font-size: 35px;
 }
