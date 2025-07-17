@@ -122,12 +122,15 @@
 
 
 @media (max-width: 1250px) {
+    /* .player_cards{
+        font-size: ;
+    } */
     .card {
         width: 30vw;
         height: 27vw;
         margin: 5px;
         margin-top: 15px;
-        font-size: 32px;
+        font-size: 23px;
     }
 
     .bar-container {
