@@ -1,19 +1,24 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Legends of Eternity</title>
-    <link rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-  </head>
-  <body>
-    <div class="game-container">
-      <h1>Legends of Eternity</h1>
-      {% block body %}
-          <a class="game_link" href="/strategy_bot">Vs Computer</a>
-          <a class="game_link" href="/strategy_pvp">Vs Player</a>
-      {% endblock %}
-    </div>
-  </body>
+
+<head>
+  <title>Legends of Eternity</title>
+  <link rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}" />
+
+  <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+</head>
+
+<body>
+  <div class="game-container">
+    <h1>Legends of Eternity</h1>
+    {% block body %}
+    <a class="game_link" href="/strategy_bot">Vs Computer</a>
+    <a class="game_link" href="/strategy_pvp">Vs Player</a>
+    {% endblock %}
+  </div>
+</body>
+
 </html>
