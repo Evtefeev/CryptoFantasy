@@ -50,3 +50,14 @@ table {
   border-collapse: collapse;
   border-spacing: 0;
 }
+
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+  font-size: 1rem;
+  line-height: 1.2;
+}
