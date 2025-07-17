@@ -20,13 +20,15 @@ app.secret_key = os.environ.get('SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 REDIS_URL = os.environ.get('REDIS_URL')
 
-app.config['SESSION_SERIALIZER'] = pickle
+USE_REDIS = False
 
-app.config['SESSION_TYPE'] = 'redis'
-app.config['SESSION_REDIS'] = redis.Redis.from_url(REDIS_URL)
-app.config['SESSION_PERMANENT'] = False
-# app.config['SESSION_USE_SIGNER'] = True  # підпис для безпеки
-app.config['SESSION_KEY_PREFIX'] = 'session:'
+if USE_REDIS:
+    app.config['SESSION_SERIALIZER'] = pickle
+    app.config['SESSION_TYPE'] = 'redis'
+    app.config['SESSION_REDIS'] = redis.Redis.from_url(REDIS_URL)
+    app.config['SESSION_PERMANENT'] = False
+    # app.config['SESSION_USE_SIGNER'] = True  # підпис для безпеки
+    app.config['SESSION_KEY_PREFIX'] = 'session:'
 
 
 Session(app)
@@ -81,9 +83,10 @@ def strategy_api():
         session['game-mode'] = mode
         if mode == "bot":
             strategy = StrategyBot(UID)
+            strategy.start()
         if mode == "pvp":
             strategy = StrategyPvPConnector(flask.session['uid'])
-        strategy.generateCards()
+            strategy.generateCards()
         strategy.CHEAT_MODE = conf.ENABLE_CHEAT
         # uid = strategyStorage.save_strategy(strategy)
         session['strategy_id'] = strategy.uid
@@ -94,10 +97,10 @@ def strategy_api():
         return 'Game not started'
 
     strategy: Strategy = strategyStorage.get_strategy(
-        session['strategy_id'], type)
+        session['strategy_id'], type, UID)
     if not strategy:
         return 'Game not started'
-
+    logging.debug(strategy.players[UID+'-bot'].cards)
     if request.form.get('action') == 'my_cards':
         return strategy.getUserCardsInfo(UID)
 
@@ -114,6 +117,7 @@ def strategy_api():
                 "user": user
             }
         except Exception as e:
+            logging.error(e.with_traceback())
             return {
                 "status": "error",
                 "message": str(e)

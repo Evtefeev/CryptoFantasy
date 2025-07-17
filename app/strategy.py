@@ -1,6 +1,7 @@
 import random
 
 import logging
+import uuid
 from app.base_strategy import Player, Strategy
 from app.helpers import StrategyStorage
 
@@ -16,9 +17,16 @@ class StrategyBot(Strategy):
     def __init__(self, uid, storage=STORAGE):
         self.botuid = str(uid)+'-bot'
         super().__init__(storage, [uid, self.botuid])
+        self.recover(uid)
+        
+    def recover(self, uid):
         self.user = self.players[uid]
         self.bot = self.players[self.botuid]
+        
+        
+    def start(self):
         self.generateCards()
+        StrategyStorage(self.storage).save_strategy(self)
 
     def userAttack(self, uid, my_card_num, opponent_card_num):
         before = self.getOpponentCardInfo(opponent_card_num)

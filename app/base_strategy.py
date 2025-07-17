@@ -144,3 +144,7 @@ class Strategy:
 
     def save(self):
         StrategyStorage(self.storage).save_strategy(self, self.uid)
+        
+        
+    def recover(self, uid):
+        pass
