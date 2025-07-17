@@ -20,8 +20,8 @@ app.secret_key = os.environ.get('SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 REDIS_URL = os.environ.get('REDIS_URL')
 
-# USE_REDIS = True
-USE_REDIS = False
+USE_REDIS = True
+# USE_REDIS = False
 
 if USE_REDIS:
     app.config['SESSION_SERIALIZER'] = pickle
