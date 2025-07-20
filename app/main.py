@@ -20,10 +20,7 @@ app.secret_key = os.environ.get('SECRET_KEY')
 app.config['SESSION_TYPE'] = 'filesystem'
 REDIS_URL = os.environ.get('REDIS_URL')
 
-USE_REDIS = True
-# USE_REDIS = False
-
-if USE_REDIS:
+if conf.USE_REDIS:
     app.config['SESSION_SERIALIZER'] = pickle
     app.config['SESSION_TYPE'] = 'redis'
     app.config['SESSION_REDIS'] = redis.Redis.from_url(REDIS_URL)

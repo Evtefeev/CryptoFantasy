@@ -21,6 +21,8 @@ let enemi_text = "Вражеский герой:"
 let you_turn = false;
 let waitInterval;
 let turnInterval;
+let game_mode;
+
 
 function startGame(mode) {
     $.post("strategy_api", { action: "start", "game-mode": mode }, (result) => {
@@ -165,7 +167,11 @@ function attack(my_card, opponent_card) {
             setTimeout(fillOponentCard.bind(null, result.after), 2000 * time_scale)
             // setTimeout(waitForOpponentTurn, 5000 * time_scale)
             clearInterval(turnInterval);
-            turnInterval = setInterval(waitForOpponentTurn, 1000);
+            if (game_mode == "pvp") {
+                turnInterval = setInterval(waitForOpponentTurn, 1000);
+            } else if (game_mode == "bot") {
+                waitForOpponentTurn()
+            }
 
         });
     } else {
@@ -195,14 +201,18 @@ $(".user_card").on("click", function () {
 
 
 function startBot() {
+    game_mode = "bot";
+
     startGame("bot");
     you_turn = true;
 }
 
 function startPVP() {
+    game_mode = "pvp";
     $("#opponent_cards").css({ display: "none" });
     startGame("pvp");
     waitInterval = setInterval(waitForOpponent, 1000);
+
 
 }
 
