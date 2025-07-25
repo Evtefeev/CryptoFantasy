@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+{% block title %}
+Leaderboard
+{% endblock %}
+{% block body %}
+<style>
+th tr td{
+    margin:2px;
+    padding:2px;
+}
+</style>
+  <table>
+        <caption>Leaderboard</caption>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+       <tbody>
+    {% for item in scores %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ item.name }}</td>
+        <td>{{ item.score }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+    </table>
+{% endblock %}

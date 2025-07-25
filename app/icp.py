@@ -29,18 +29,42 @@ def increase_score(user_id: str, amount: int):
         "increaseScore",
         encode(params)
     )
-    print(response)
+    return response
+
+
+def get_scores():
+    response = agent.update_raw(
+        CANISTER_ID,
+        "getLeaderboard",
+        encode([])
+    )
+
+    # Extract the list of records
+    raw_list = response[0]['value']
+    
+    # Map raw keys to readable names
+    result = [
+        {"name": item["_1106197254"], "score": item["_2027516754"]}
+        for item in raw_list
+    ]
+    
+    return result
 
 
 def who_is_caller():
-
     response = agent.update_raw(
         CANISTER_ID,
         "whoIsCaller",
         encode([])
     )
-    print(response)
+    return response
+
 
 if __name__ == "__main__":
-    who_is_caller()
-    increase_score("nikita", 100)
+    res = [
+        who_is_caller(),
+        increase_score("nikita", 100),
+        get_scores()
+    ]
+    for r in res:
+        print(r)

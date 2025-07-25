@@ -2,7 +2,8 @@
 <html>
 
 <head>
-  <title>Legends of Eternity</title>
+  <title>
+    {% block title %}Legends of Eternity{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <link rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
@@ -14,6 +15,8 @@
 <body>
   <div class="game-container">
     <h1>Legends of Eternity</h1>
+    <a href="/">Game</a>
+    <a href="/leaderboard">Leaderboard</a>
     {% block body %}
     <div class='description'>
       <p>

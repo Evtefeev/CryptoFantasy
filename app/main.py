@@ -10,6 +10,7 @@ from app.strategy import Strategy, StrategyBot, StrategyPvPConnector, StrategyPv
 from flask_session import Session
 from app.helpers import StrategyStorage
 import app.conf as conf
+import icp
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -65,6 +66,10 @@ def strategy_pvp():
         card_ids=range(Strategy.CARDS_NUMBER)
     )
 
+
+@app.route('/leaderboard')
+def leaderborad():
+    return render_template("leaderboard.html", scores = icp.get_scores())
 
 strategyStorage = StrategyStorage(conf.STORAGE)
 
@@ -133,6 +138,9 @@ def strategy_api():
         return {'stauts': 'waiting'}
 
     return "invalid action"
+
+
+
 
 
 if __name__ == '__main__':
