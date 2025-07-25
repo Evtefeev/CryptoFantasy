@@ -10,7 +10,7 @@ from app.strategy import Strategy, StrategyBot, StrategyPvPConnector, StrategyPv
 from flask_session import Session
 from app.helpers import StrategyStorage
 import app.conf as conf
-import app.icp
+import app.icp as icp
 
 logging.basicConfig(level=logging.DEBUG)
 
