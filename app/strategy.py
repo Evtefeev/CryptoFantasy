@@ -46,8 +46,10 @@ class StrategyBot(Strategy):
         self.increaseOpponentEnergy()
         user_card_num = self.getRandomActiveUserCardNumber()
         opponent_card_num = self.getRandomActiveOpponentCardNumber()
-        self.attackUser(user_card_num, opponent_card_num)
-        opponent_info = self.getOpponentCardInfo(opponent_card_num)
+        opponent_info = None
+        if user_card_num and opponent_card_num: 
+            self.attackUser(user_card_num, opponent_card_num)
+            opponent_info = self.getOpponentCardInfo(opponent_card_num)
         user_info = self.getUserCardInfo(uid, user_card_num)
         status = self.getStatus(uid)
         return opponent_info, user_info, status or "turn"

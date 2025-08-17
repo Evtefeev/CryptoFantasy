@@ -53,15 +53,14 @@ function loadMyCards() {
 
 
 function fillOponentCard(card_data) {
-    console.log(card_data);
-    let id = card_data.card_number;
-
-    let card = $('#opponent_card_' + id);
-
-
-    $(".opponent_card").css({ border: "1px solid #000" })
-    card.css({ border: "2px solid #f00" })
-    fillCard(card_data, card);
+    if (card_data) {
+        console.log(card_data);
+        let id = card_data.card_number;
+        let card = $('#opponent_card_' + id);
+        $(".opponent_card").css({ border: "1px solid #000" })
+        card.css({ border: "2px solid #f00" })
+        fillCard(card_data, card);
+    }
 }
 
 function fillUserCard(card_data) {
