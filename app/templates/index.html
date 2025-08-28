@@ -10,9 +10,11 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}" />
   <script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
   <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='lazy-load.js') }}"></script>
+  <script src="{{ url_for('static', filename='image-cache.js') }}"></script>
 </head>
 
-<body>
+<body class="lazy-bg" data-bg="/static/imgs/bg.webp">
   <div class="game-container">
     <h1>Legends of Eternity</h1>
     <a href="/">Game</a>

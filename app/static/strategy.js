@@ -75,7 +75,9 @@ function fillUserCard(card_data) {
 function fillCard(card_data, card) {
 
     card.find('#hero-name')[0].innerText = `${card_data.name}`
-    card[0].style.backgroundImage = `url('/static/imgs/${card_data.image}')`
+    card[0].style.backgroundImage = `url('/static/imgs/small-${card_data.image}')`;
+    card[0].dataset.bg = `/static/imgs/${card_data.image}`;
+    card[0].classList.add('lazy-bg');
     card.find('#hero-health')[0].innerText = `${health_text} ${card_data.health}`
     card.find('#hero-attack')[0].innerText = `${attack_text} ${card_data.attack}`
     card.find('#hero-defense')[0].innerText = `${defence_text} ${card_data.defense}`
@@ -92,7 +94,7 @@ function fillCard(card_data, card) {
 
     updateHeroBar(healthBar, card_data.health, card_data.base_health);
     updateHeroBar(heroEnergyBar, card_data.energy, 1);
-
+    lazyLoadImgs();
 }
 
 function updateHeroBar(bar, value, max) {

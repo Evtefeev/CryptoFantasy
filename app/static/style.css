@@ -1,6 +1,9 @@
 body {
     font-family: Arial, sans-serif;
-    background-image: url('/static/imgs/bg.webp');
+    background-image: url('/static/imgs/bg-small.webp');
+    /* background-repeat: no-repeat; */
+    background-size: cover;
+    background-color: rgb(69, 77, 51);
     color: blanchedalmond;
     text-shadow: 2px 2px black;
     -webkit-user-select: none;
@@ -121,3 +124,25 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
 }
+
+
+.blur {
+    filter: blur(20px);
+    transition: filter 0.3s;
+}
+
+.blur.loaded {
+    filter: blur(0);
+}
+
+
+/* .lazy-bg {
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px);
+  transition: filter 0.5s;
+}
+
+.lazy-bg.loaded {
+  filter: blur(0);
+} */
