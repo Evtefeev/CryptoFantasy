@@ -5,9 +5,9 @@
   <title>
     {% block title %}Legends of Eternity{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <link rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <link rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}" />
+  <link async rel="shortcut icon" href="{{ url_for('static', filename='/imgs/logo.png') }}" />
+  <link async rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link async rel="stylesheet" href="{{ url_for('static', filename='reset.css') }}" />
   <script async src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
   <script async src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
   <script async src="{{ url_for('static', filename='lazy-load.js') }}"></script>
