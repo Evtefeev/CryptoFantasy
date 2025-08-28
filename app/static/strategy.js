@@ -1,3 +1,6 @@
+let my_card_num = -1
+
+
 let time_scale = 0.5
 
 
@@ -190,46 +193,45 @@ function attack(my_card, opponent_card) {
 
 }
 
-let my_card_num = -1
-
-$(".opponent_card").on("click", function () {
-    if (!this.classList.contains('gray-foreground')) {
-        let opponent_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
-        $(".opponent_card").css({ border: "1px solid #000" })
-        $(this).css({ border: "2px solid #f00" })
-        if (my_card_num != -1) {
-            attack(my_card_num, opponent_card_num);
-            console.log(my_card_num, opponent_card_num);
-        }
-    }
-});
-
-
-$(".user_card").on("click", function () {
-    if (!this.classList.contains('gray-foreground')) {
-        my_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
-        $(".user_card").css({ border: "1px solid #000" })
-        $(this).css({ border: "2px solid #0f0" })
-    }
-
-});
-
-
 function startBot() {
     game_mode = "bot";
-
-    startGame("bot");
-    setOpponentStatus('You Turn')
-    you_turn = true;
 }
 
 function startPVP() {
     game_mode = "pvp";
-    $("#opponent_cards").css({ display: "none" });
-    startGame("pvp");
-    waitInterval = setInterval(waitForOpponent, 1000);
-
-
 }
 
+window.onload = () => {
 
+    if (game_mode == "bot") {
+        startGame("bot");
+        setOpponentStatus('You Turn')
+        you_turn = true;
+    } else if (game_mode == "pvp") {
+        $("#opponent_cards").css({ display: "none" });
+        startGame("pvp");
+        waitInterval = setInterval(waitForOpponent, 1000);
+    }
+
+    $(".opponent_card").on("click", function () {
+        if (!this.classList.contains('gray-foreground')) {
+            let opponent_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
+            $(".opponent_card").css({ border: "1px solid #000" })
+            $(this).css({ border: "2px solid #f00" })
+            if (my_card_num != -1) {
+                attack(my_card_num, opponent_card_num);
+                console.log(my_card_num, opponent_card_num);
+            }
+        }
+    });
+
+
+    $(".user_card").on("click", function () {
+        if (!this.classList.contains('gray-foreground')) {
+            my_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
+            $(".user_card").css({ border: "1px solid #000" })
+            $(this).css({ border: "2px solid #0f0" })
+        }
+
+    });
+}
