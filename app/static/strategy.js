@@ -109,19 +109,24 @@ function waitForOpponentTurn() {
         if (result.status == "waiting") {
             return
         }
-        if (result.status == "turn") {
-            clearInterval(turnInterval);
-            you_turn = true;
-            let opponent_card = result.opponent_info
-            fillOponentCard(opponent_card)
-            setTimeout(fillUserCard.bind(null, result.user_info), 2000 * time_scale)
-            setTimeout(loadMyCards, 2500 * time_scale)
-            setOpponentStatus("You turn!");
-            return;
-        }
-        setOpponentStatus(result.status);
+        // if (result.status == "turn") {
         clearInterval(turnInterval);
-        alert(result.status);
+        you_turn = true;
+        let opponent_card = result.opponent_info
+        fillOponentCard(opponent_card)
+        setTimeout(fillUserCard.bind(null, result.user_info), 2000 * time_scale)
+        setTimeout(loadMyCards, 2500 * time_scale)
+        setOpponentStatus("You turn!");
+        if (result.status == 'lose') {
+            setOpponentStatus("You lose!");
+            clearInterval(turnInterval);
+            alert("You lose!");
+        }
+        if (result.status == 'win') {
+            setOpponentStatus("You win!");
+            clearInterval(turnInterval);
+            alert("You win!");
+        }
     });
 }
 
@@ -163,15 +168,16 @@ function attack(my_card, opponent_card) {
             console.log(result.after);
             fillUserCard(result.user);
             fillOponentCard(card_data);
-            setTimeout(fillOponentCard.bind(null, result.after), 2000 * time_scale)
-            // setTimeout(waitForOpponentTurn, 5000 * time_scale)
-            clearInterval(turnInterval);
-            if (game_mode == "pvp") {
-                turnInterval = setInterval(waitForOpponentTurn, 1000);
-            } else if (game_mode == "bot") {
-                waitForOpponentTurn()
-            }
-
+            setTimeout(fillOponentCard.bind(null, result.after), 2000 * time_scale);
+            setTimeout(() => {
+                // setTimeout(waitForOpponentTurn, 5000 * time_scale)
+                clearInterval(turnInterval);
+                if (game_mode == "pvp") {
+                    turnInterval = setInterval(waitForOpponentTurn, 1000);
+                } else if (game_mode == "bot") {
+                    waitForOpponentTurn()
+                }
+            }, 3000 * time_scale);
         });
     } else {
         alert("Waiting opponent turn");
@@ -182,20 +188,25 @@ function attack(my_card, opponent_card) {
 let my_card_num = -1
 
 $(".opponent_card").on("click", function () {
-    let opponent_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
-    $(".opponent_card").css({ border: "1px solid #000" })
-    $(this).css({ border: "2px solid #f00" })
-    if (my_card_num != -1) {
-        attack(my_card_num, opponent_card_num);
-        console.log(my_card_num, opponent_card_num);
+    if (!this.classList.contains('gray-foreground')) {
+        let opponent_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
+        $(".opponent_card").css({ border: "1px solid #000" })
+        $(this).css({ border: "2px solid #f00" })
+        if (my_card_num != -1) {
+            attack(my_card_num, opponent_card_num);
+            console.log(my_card_num, opponent_card_num);
+        }
     }
 });
 
 
 $(".user_card").on("click", function () {
-    my_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
-    $(".user_card").css({ border: "1px solid #000" })
-    $(this).css({ border: "2px solid #0f0" })
+    if (!this.classList.contains('gray-foreground')) {
+        my_card_num = parseInt($(this).attr('id').match(/(\d+)$/)[0], 10)
+        $(".user_card").css({ border: "1px solid #000" })
+        $(this).css({ border: "2px solid #0f0" })
+    }
+
 });
 
 
@@ -203,6 +214,7 @@ function startBot() {
     game_mode = "bot";
 
     startGame("bot");
+    setOpponentStatus('You Turn')
     you_turn = true;
 }
 

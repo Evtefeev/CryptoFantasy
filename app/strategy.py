@@ -37,9 +37,9 @@ class StrategyBot(Strategy):
 
     def getStatus(self, uid):
         if len(self.bot.active_cards) == 0:
-            return 'Victory!'
+            return 'win'
         if len(self.user.active_cards) == 0:
-            return 'lose!'
+            return 'lose'
         return None
 
     def waitAttack(self, uid):
@@ -47,7 +47,7 @@ class StrategyBot(Strategy):
         user_card_num = self.getRandomActiveUserCardNumber()
         opponent_card_num = self.getRandomActiveOpponentCardNumber()
         opponent_info = None
-        if user_card_num and opponent_card_num: 
+        if user_card_num != None and opponent_card_num != None: 
             self.attackUser(user_card_num, opponent_card_num)
             opponent_info = self.getOpponentCardInfo(opponent_card_num)
         user_info = self.getUserCardInfo(uid, user_card_num)
